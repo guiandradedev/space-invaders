@@ -1,4 +1,4 @@
-package entities;
+package com.spaceinvasors.model;
 
 public class Bullet {
 	private double speed_y;

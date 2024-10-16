@@ -1,4 +1,4 @@
-package entities;
+package com.spaceinvasors.model;
 
 public class Position {
 	private double x;

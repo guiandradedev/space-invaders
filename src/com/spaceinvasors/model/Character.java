@@ -1,4 +1,4 @@
-package entities;
+package com.spaceinvasors.model;
 
 public abstract class Character {
 	private Position position;

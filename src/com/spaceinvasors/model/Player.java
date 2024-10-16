@@ -1,4 +1,4 @@
-package entities;
+package com.spaceinvasors.model;
 
 public class Player extends Character{
 	private int points;
