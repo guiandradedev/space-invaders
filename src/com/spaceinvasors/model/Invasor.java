@@ -6,7 +6,9 @@ public class Invasor extends Character{
 		super(position, lives, speed_x);
 	}
 	
-	public void move() {}
+	public void move(double x, double y) {
+		this.getPosition().setPosition(x,y);
+	}
 	public void shoot() {}
 	public void takeDamage() {}
 

@@ -11,7 +11,9 @@ public class Player extends Character{
 		setHits(hits);
 	}
 	
-	public void move() {}
+	public void move(double x, double y) {
+		this.getPosition().setPosition(x,y);
+	}
 	public void shoot() {}
 	public void takeDamage() {}
 

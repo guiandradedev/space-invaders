@@ -12,5 +12,17 @@ public class Position {
 		this.x = x;
 		this.y = y;
 	}
+	public double getX(){
+		return this.x;
+	}
+	public double getY(){
+		return this.y;
+	}
+	public void setX(){
+		this.x = x;
+	}
+	public void setY(){
+		this.y = y;
+	}
 
 }

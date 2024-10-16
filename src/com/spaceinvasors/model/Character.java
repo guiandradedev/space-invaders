@@ -12,7 +12,7 @@ public abstract class Character {
 		setLives(lives);
 	}
 	
-	public abstract void move();
+	public abstract void move(double x, double y);
 	public abstract void shoot();
 	public abstract void takeDamage();
 	
