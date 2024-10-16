@@ -6,9 +6,14 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spaceinvasors.controller.GameController">
    <children>
-      <Label layoutX="285.0" layoutY="53.0" text="Space Invasors - Jogo" textFill="#00ff2b">
+      <Button fx:id="btnRegras" layoutX="65.0" layoutY="53.0" mnemonicParsing="false" onAction="#backMain" text="Voltar">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Button>
+      <Label layoutX="239.0" layoutY="54.0" text="Space Invasors - Jogo" textFill="#00ff2b">
          <font>
             <Font size="36.0" />
          </font>

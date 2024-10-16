@@ -19,6 +19,7 @@ public class Main extends Application {
             Image icon = new Image(getClass().getResourceAsStream("/com/spaceinvasors/image/icon.png"));
             stage.getIcons().add(icon); // seta o icone do app
 
+            stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
