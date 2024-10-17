@@ -4,7 +4,7 @@ public class Player extends Character{
 	private int points;
 	private int hits;
 
-	public Player(Position position, int lives, int speed_x, int points, int hits) {
+	public Player(Position position, int lives, double speed_x, int points, int hits) {
 		super(position, lives, speed_x);
 		
 		setPoints(points);
@@ -37,6 +37,12 @@ public class Player extends Character{
 	}
 	public void addHits(int hits) {
 		setHits(this.getHits() + hits);
+	}
+	public void addHit() {
+		setHits(this.getHits() + 1);
+	}
+	public void addPoint() {
+		setHits(this.getPoints() + 1);
 	}
 	
 }

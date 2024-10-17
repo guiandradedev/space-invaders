@@ -6,7 +6,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class PlayerArt extends PixelArt{
+public class PlayerArt extends ElementArt{
     public PlayerArt(int width, int height, int pixelSize, Character character) {
         super(width, height, pixelSize, character);
         drawArt();
@@ -22,6 +22,8 @@ public class PlayerArt extends PixelArt{
             {Color.BLACK, Color.RED, Color.RED, Color.BLACK},
             {Color.BLACK, Color.RED, Color.RED, Color.BLACK},
             {Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK}
+
+            // quadrado 4:4
         };
 
         for (int y = 0; y < pixels.length; y++) {

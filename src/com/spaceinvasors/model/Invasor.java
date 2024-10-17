@@ -2,7 +2,7 @@ package com.spaceinvasors.model;
 
 public class Invasor extends Character{
 
-	public Invasor(Position position, int lives, int speed_x) {
+	public Invasor(Position position, int lives, double speed_x) {
 		super(position, lives, speed_x);
 	}
 	
