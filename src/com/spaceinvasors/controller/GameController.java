@@ -4,9 +4,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.spaceinvasors.model.Invasor;
 import com.spaceinvasors.model.Player;
 import com.spaceinvasors.model.Position;
+import com.spaceinvasors.components.FastInvasor;
+import com.spaceinvasors.components.InvasorComponent;
+import com.spaceinvasors.components.MidInvasor;
 import com.spaceinvasors.components.PlayerArt;
+import com.spaceinvasors.components.StrongInvasor;
 
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
@@ -24,12 +29,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.util.List;
+import com.spaceinvasors.model.Character;
 
 public class GameController implements Initializable {
     private Stage stage;
     private Scene scene;
 
-    // private List<>
+    private List<InvasorComponent> invasors;
 
     @FXML
     private AnchorPane root;
@@ -38,11 +44,31 @@ public class GameController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         root.setFocusTraversable(true);
 
-        // for(int i=0; i<4; i++) {
-        //     for(int i=0; i<10; i++) {
+        Class<?>[] invasorTypes = new Class<?>[] {
+            StrongInvasor.class,
+            MidInvasor.class,
+            FastInvasor.class,
+        };
 
-        //     }
-        // } 
+        int height = 150;
+
+        for (Class<?> invasorType : invasorTypes) {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Invasor invasor = new Invasor(new Position((i * 50) + 100, height), 1, 0);
+
+                    InvasorComponent invasorArt = (InvasorComponent) invasorType
+                        .getDeclaredConstructor(int.class, int.class, int.class, Character.class)
+                        .newInstance(5, 5, 10, invasor);
+        
+                    root.getChildren().add(invasorArt);
+        
+                } catch (Exception e) {
+                    e.printStackTrace(); 
+                }
+            }
+            height += 50;
+        }
 
         Player player = new Player(new Position(100, 400), 0, 0, 0, 0);
         PlayerArt playerArt = new PlayerArt(10, 10, 10,player); 

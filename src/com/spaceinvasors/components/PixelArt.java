@@ -20,30 +20,23 @@ public abstract class PixelArt extends Canvas{
 
     public abstract void drawArt();
 
-    // public void setX(int x) {
-    //     this.character.getPosition().setX
-    // }
-    // public void setY(int y) {
-    //     this.y = y;
-    // }
-    public double getX(){
-        return this.character.getPosition().getX();
-    }
-    public double getY(){
-        return this.character.getPosition().getY();
-    }
-
     public void move(int x, int y) {
-        if(this.getX() + x <= Constants.SCREEN_WIDTH - Constants.LIMIT_SCREEN_WIDTH && this.getX() + x >= Constants.LIMIT_SCREEN_WIDTH) {
-            character.move(this.getX() + x, 0);
-            System.out.println(this.getX() + x);
-            this.setLayoutX(this.character.getPosition().getX());
-        } 
-        if(this.getY() + y <= Constants.SCREEN_HEIGHT - Constants.LIMIT_SCREEN_HEIGHT && this.getY() + y >= Constants.LIMIT_SCREEN_HEIGHT) {
-            character.move(0, this.getY() + y);
-            this.setLayoutY(this.character.getPosition().getY());
-        } 
+        double newX = this.character.getPosition().getX() + x;
+        double newY = this.character.getPosition().getY() + y;
+    
+        // Verifica limites horizontal
+        if (newX >= 0 && newX <= Constants.SCREEN_WIDTH - this.getWidth()) {
+            character.move(newX, this.character.getPosition().getY());
+            this.setLayoutX(newX);
+        }
+    
+        // Verifica limites vertical
+        if (newY >= 0 && newY <= Constants.SCREEN_HEIGHT - this.getHeight()) {
+            character.move(this.character.getPosition().getX(), newY);
+            this.setLayoutY(newY);
+        }
     }
+    
 
     public int getPixelSize() {
         return this.pixelSize;
