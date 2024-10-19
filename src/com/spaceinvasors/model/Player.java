@@ -3,6 +3,7 @@ package com.spaceinvasors.model;
 public class Player extends Character{
 	private int points;
 	private int hits;
+	private boolean isShooting = false;
 
 	public Player(Position position, int lives, double speed_x, int points, int hits) {
 		super(position, lives, speed_x);
@@ -14,7 +15,9 @@ public class Player extends Character{
 	public void move(double x, double y) {
 		this.getPosition().setPosition(x,y);
 	}
-	public void shoot() {}
+	public void shoot(Character invasor) {
+		System.out.println(invasor);
+	}
 	public void takeDamage() {}
 
 	public int getPoints() {
@@ -42,7 +45,7 @@ public class Player extends Character{
 		setHits(this.getHits() + 1);
 	}
 	public void addPoint() {
-		setHits(this.getPoints() + 1);
+		setPoints(this.getPoints() + 1);
 	}
 	
 }

@@ -13,7 +13,7 @@ public abstract class Character {
 	}
 	
 	public abstract void move(double x, double y);
-	public abstract void shoot();
+	public abstract void shoot(Character invasor);
 	public abstract void takeDamage();
 	
 	public Position getPosition() {

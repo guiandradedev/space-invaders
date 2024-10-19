@@ -18,6 +18,10 @@ public abstract class ElementArt extends PixelArt{
 
     public abstract void drawArt();
 
+    public Character getCharacter(){
+        return this.character;
+    }
+
     public void move(double x, double y) {
         double newX = this.character.getPosition().getX() + x;
         double newY = this.character.getPosition().getY() + y;
