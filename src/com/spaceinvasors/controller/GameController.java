@@ -16,6 +16,7 @@ import com.spaceinvasors.components.InvasorComponent;
 import com.spaceinvasors.components.MidInvasor;
 import com.spaceinvasors.components.PlayerArt;
 import com.spaceinvasors.components.StrongInvasor;
+import com.spaceinvasors.enums.InvasorType;
 
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
@@ -57,7 +58,7 @@ public class GameController implements Initializable {
     // Constantes
     private final int totalX = Constants.SCREEN_WIDTH - 2*Constants.LIMIT_SCREEN_WIDTH;
     private final int totalY = Constants.SCREEN_HEIGHT - 2*Constants.LIMIT_SCREEN_HEIGHT;
-    private final long delay = 500;
+    private final int delay = 500; // em ms
 
     // Variaveis
     private boolean canExecute = true;
@@ -92,145 +93,82 @@ public class GameController implements Initializable {
 
     private void keyChange(KeyEvent event) {
         event.consume(); 
-        if (event.getCode() == KeyCode.A) {
-            playerArt.move(-player.getSpeedX(), 0);
-        } else if(event.getCode() == KeyCode.D) {
-            playerArt.move(player.getSpeedX(), 0);
-            playerArt.setLayoutX(player.getPosition().getX());
-        } else if(event.getCode() == KeyCode.ENTER) {
-            if(canExecute) {
-                canExecute = false;
 
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        canExecute = true;  // Libera o listener após o tempo definido
-                    }
-                }, delay);
-
-                player.addHit();
-                hitsLabel.setText("Tiros: "+player.getHits());
-
-                Bullet bullet = new Bullet(new Position(player.getPosition().getX(), player.getPosition().getY()), speed_bullet);
-                // System.out.println(player.getPosition().getX() + " " + player.getPosition().getY());
-                BulletArt bulletArt = new BulletArt(1, 3, 5, bullet);
-
-                TranslateTransition bulletTransition = new TranslateTransition();
-                bulletTransition.setNode(bulletArt);
-                bulletTransition.setDuration(Duration.millis(200 * bullet.getSpeedY()));
-                bulletTransition.setCycleCount(1);
-                bulletTransition.setByY(-totalY + 50);
-                bulletTransition.setInterpolator(Interpolator.LINEAR); // Definindo interpolação linear (velocidade constante)
-                bulletTransition.play();
-
-                final boolean[] isValidated = { false };
-
-                bulletTransition.currentTimeProperty().addListener(new ChangeListener<Duration>() {
-
-                    @Override
-                    public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
-                        int i=0;
-                        for(List<InvasorComponent> invasorComponents : invasors) {
-                            for(InvasorComponent invasor : invasorComponents) {
-                                if (bulletArt.getBoundsInParent().intersects(invasor.getBoundsInParent()) && !isValidated[0] && !invasor.getCharacter().isHitted()) {
-                                    // Colisão detectada
-                                    System.out.println("Colisão detectada!" + invasor.getClass() + " " + invasor.getLayoutX() + " " + i);
-                                    isValidated[0] = true;
-                                    // // Parar a animação
-                                    bulletTransition.stop();
-    
-                                    // TranslateTransition transition = transitions.get(i);
-                                    // transitions.remove(i);
-                                    // transition.stop();
-                                    // // // invasor.stop();
-
-                                    invasor.getCharacter().setHitted();
-
-                                    player.shoot(invasor.getCharacter());
-
-                                    if(invasor.getClass() == StrongInvasor.class) {
-                                        player.addPoints(3);
-                                    } else if(invasor.getClass() == MidInvasor.class) {
-                                        player.addPoints(2);
-                                    } else {
-                                        player.addPoint();
-                                    }
-                                    System.out.println(player.getPoints());
-
-                                    pointsLabel.setText("Pontos: "+player.getPoints());
-                                    
-                                    // // Remover o inimigo da tela
-                                    root.getChildren().remove(invasor);
-                                    root.getChildren().remove(bulletArt);
-                                    bulletTransition.currentTimeProperty().removeListener(this);
-                                }
-                                i++;
-                            }
-                        }
-                        i=0;
-                    }
-                });
-                // bulletTransition.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
-                //     int i=0;
-                //     for(List<InvasorComponent> invasorComponents : invasors) {
-                //         for(InvasorComponent invasor : invasorComponents) {
-                //             if (bulletArt.getBoundsInParent().intersects(invasor.getBoundsInParent())) {
-                //                 // Colisão detectada
-                //                 System.out.println("Colisão detectada!" + invasor.getClass() + " " + invasor.getLayoutX() + " " + i);
-                                
-                //                 // // Parar a animação
-                //                 bulletTransition.stop();
-                                
-                //                 // player.addPoint();
-                //                 // System.out.println(player.getPoints());
-
-                //                 // // TranslateTransition transition = transitions.get(i);
-                //                 // // transitions.remove(i);
-                //                 // // transition.stop();
-                //                 // // // invasor.stop();
-                                
-                //                 // pointsLabel.setText("Pontos: "+player.getPoints());
-                                
-                //                 // // Remover o inimigo da tela
-                //                 // root.getChildren().remove(invasor);
-                //                 root.getChildren().remove(bulletArt);
-                //                 return;
-                //             }
-                //             i++;
-                //         }
-                //     }
-                //     i=0;
-                // });
-
-                // for(List<InvasorComponent> invasorComponents : invasors) {
-                //     for(InvasorComponent invasor : invasorComponents) {
-                //         if (bulletArt.getBoundsInParent().intersects(invasor.getBoundsInParent())) {
-                //             // Colisão detectada
-                //             System.out.println("Colisão detectada!" + invasor.getLayoutX());
-            
-                //             // // Parar a animação
-                //             // bulletTransition.stop();
-                //             // // invasor.stop();
-            
-                //             // // Remover o inimigo da tela
-                //             // root.getChildren().remove(invasor);
-                //         }
-                //     }
-                // }
-
-                // Adiciona o BulletArt à cena
-                root.getChildren().add(bulletArt);
-
-                // Adiciona um listener para executar uma ação após a animação terminar
-                bulletTransition.setOnFinished(removeEvent -> {
-                    // Remove o BulletArt da cena
-                    root.getChildren().remove(bulletArt);
-                });
-
-
+        switch (event.getCode()) {
+            case A -> {
+                playerArt.move(-player.getSpeedX(), 0);
             }
-            
+            case D -> {
+                playerArt.move(player.getSpeedX(), 0);
+                playerArt.setLayoutX(player.getPosition().getX());
+            }
+            case ENTER -> {
+                this.shoot();
+            }
+            // default -> {}
+        }
+    }
+
+    private void shoot() {
+        if(canExecute) {
+            canExecute = false;
+
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    canExecute = true;
+                }
+            }, delay);
+
+            player.addHit();
+            hitsLabel.setText("Tiros: "+player.getHits());
+
+            Bullet bullet = new Bullet(new Position(player.getPosition().getX(), player.getPosition().getY()), speed_bullet);
+            BulletArt bulletArt = new BulletArt(1, 3, 5, bullet);
+
+            TranslateTransition bulletTransition = new TranslateTransition();
+            bulletTransition.setNode(bulletArt);
+            bulletTransition.setDuration(Duration.millis(200 * bullet.getSpeedY()));
+            bulletTransition.setCycleCount(1);
+            bulletTransition.setByY(-totalY + 50);
+            bulletTransition.setInterpolator(Interpolator.LINEAR); // Definindo interpolação linear (velocidade constante)
+            bulletTransition.play();
+            root.getChildren().add(bulletArt);
+
+            final boolean[] isValidated = { false };
+
+            bulletTransition.currentTimeProperty().addListener(new ChangeListener<Duration>() {
+
+                @Override
+                public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+                    int i=0;
+                    for(List<InvasorComponent> invasorComponents : invasors) {
+                        for(InvasorComponent invasor : invasorComponents) {
+                            if (bulletArt.getBoundsInParent().intersects(invasor.getBoundsInParent()) && !isValidated[0] && !invasor.getCharacter().isHitted()) {
+                                isValidated[0] = true;
+
+                                invasor.getCharacter().takeDamage();
+                                player.shoot(invasor.getCharacter());
+                                
+                                System.out.println("Colisão detectada!" + invasor.getClass() + " " + invasor.getLayoutX() + " " + i);
+                                pointsLabel.setText("Pontos: "+player.getPoints());
+                                
+                                bulletTransition.stop();
+                                root.getChildren().remove(invasor);
+                                root.getChildren().remove(bulletArt);
+                                bulletTransition.currentTimeProperty().removeListener(this);
+                            }
+                            i++;
+                        }
+                    }
+                }
+            });
+
+
+            bulletTransition.setOnFinished(removeEvent -> {
+                root.getChildren().remove(bulletArt);
+            });
         }
     }
 
@@ -248,7 +186,7 @@ public class GameController implements Initializable {
             int width = 6;
             for (int i = 0; i < 10; i++) {
                 try {
-                    Invasor invasor = new Invasor(new Position((i * 50) + Constants.LIMIT_SCREEN_WIDTH, height), 1, speed_invasor, invasorType.getSimpleName());
+                    Invasor invasor = new Invasor(new Position((i * 50) + Constants.LIMIT_SCREEN_WIDTH, height), 1, speed_invasor, InvasorType.fromValue(invasorType.getSimpleName()));
                     double time = totalX * invasor.getSpeedX();
 
                     InvasorComponent invasorArt = (InvasorComponent) invasorType
@@ -268,21 +206,6 @@ public class GameController implements Initializable {
 
                     transitions.add(enemyTransition);
 
-                    // enemyTransition.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
-                    //     // Verificar colisão entre player e enemy
-                    //     if (playerArt.getBoundsInParent().intersects(invasorArt.getBoundsInParent())) {
-                    //         // Colisão detectada
-                    //         System.out.println("Colisão detectada!");
-            
-                    //         // Parar a animação
-                    //         enemyTransition.stop();
-            
-                    //         // Remover o inimigo da tela
-                    //         root.getChildren().remove(invasorArt);
-                    //     }
-                    // });
-            
-
                     listAux.add(invasorArt);
         
                     root.getChildren().add(invasorArt);
@@ -294,7 +217,6 @@ public class GameController implements Initializable {
             invasors.add(listAux);
             height += 50;
             // timer += 1000;
-
         }
     }
 

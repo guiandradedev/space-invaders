@@ -15,8 +15,15 @@ public class Player extends Character{
 	public void move(double x, double y) {
 		this.getPosition().setPosition(x,y);
 	}
-	public void shoot(Character invasor) {
-		System.out.println(invasor);
+	public void shoot(Character character) {
+		if(character instanceof Invasor) {
+			Invasor invasor = (Invasor) character; // Fazendo o casting
+
+			invasor.setHitted();
+			addPoints(invasor.getType().getPoints());
+		} else {
+			throw new IllegalArgumentException("Parametro inválido");
+		}
 	}
 	public void takeDamage() {}
 
@@ -43,9 +50,6 @@ public class Player extends Character{
 	}
 	public void addHit() {
 		setHits(this.getHits() + 1);
-	}
-	public void addPoint() {
-		setPoints(this.getPoints() + 1);
 	}
 	
 }

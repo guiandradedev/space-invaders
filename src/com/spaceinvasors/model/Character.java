@@ -4,7 +4,6 @@ public abstract class Character {
 	private Position position;
 	private int lives;
 	private double speed_x;
-	// adicionar imagem do personagem
 
 	public Character(Position position, int lives, double speed_x) {
 		setPosition(position);

@@ -11,6 +11,4 @@ public class Constants {
     public static final String GAME_TITLE = "Space Invaders";
     public static final int PLAYER_SIZE = 20;
     public static final int ENEMY_SIZE = 30;
-    
-    // Adicione outras constantes conforme necessário
 }
