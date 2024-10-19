@@ -3,25 +3,15 @@ package com.spaceinvaders.model;
 import com.spaceinvaders.components.BulletArt;
 import com.spaceinvaders.components.ElementArt;
 
-public class Bullet {
+public class Bullet extends Element{
 	private double speed_y;
-	private Position position;
 	private BulletArt bulletArt;
 
 	public Bullet(Position position, double speed_y, BulletArt bulletArt) {
-		setPosition(position);
+		super(position, bulletArt);
 		setSpeedY(speed_y);
 		setBulletArt(bulletArt);
 	}
-
-	public Position getPosition() {
-		return position;
-	}
-
-	public void setPosition(Position position) {
-		this.position = position;
-	}
-
 	public double getSpeedY() {
 		return speed_y;
 	}

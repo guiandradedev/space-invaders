@@ -36,8 +36,8 @@ public class Player extends Character{
 	public boolean isShooting() {
 		return this.isShooting;
 	}
-	public void setIsShooting() {
-		this.isShooting = true;
+	public void setIsShooting(boolean isShooting) {
+		this.isShooting = isShooting;
 	}
 
 	public void addPoints(int points) {

@@ -2,22 +2,28 @@ package com.spaceinvaders.components;
 
 import com.spaceinvaders.model.Bullet;
 import com.spaceinvaders.model.Character;
+import com.spaceinvaders.model.Element;
+import com.spaceinvaders.model.Position;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class BulletArt extends PixelArt {
-    private Bullet bullet;
-
-    public BulletArt(int width, int height, int pixelSize, Bullet bullet) {
+    public BulletArt(int width, int height, int pixelSize) {
         super(width, height, pixelSize);
         drawArt();
+    }
 
-        bullet.getPosition().setY(bullet.getPosition().getY() - this.getHeight());
+    @Override
+    public void printArt(Position position) {
+        this.drawArt();
 
-        this.setLayoutX(bullet.getPosition().getX());
-        this.setLayoutY(bullet.getPosition().getY());
+        position.setY(position.getY() - this.getHeight() - 2);
+        position.setX(position.getX() + (this.getPixelSize() * this.getWidth())/2 + 2);
+
+        this.setLayoutX(position.getX());
+        this.setLayoutY(position.getY());
     }
 
     public void drawArt() {
@@ -42,9 +48,10 @@ public class BulletArt extends PixelArt {
     }
 
     @Override
-    public void move(Character character, double x, double y) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'move'");
+    public void move(Element target, double x, double y) {
+        if(target instanceof Bullet) {
+            Bullet bullet = (Bullet)target;
+        }
     }
     
 

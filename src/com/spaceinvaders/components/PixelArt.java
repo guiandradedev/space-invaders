@@ -1,6 +1,7 @@
 package com.spaceinvaders.components;
 
 import com.spaceinvaders.model.Character;
+import com.spaceinvaders.model.Element;
 import com.spaceinvaders.model.Position;
 import com.spaceinvaders.utils.Constants;
 
@@ -21,7 +22,7 @@ public abstract class PixelArt extends Canvas{
         this.setLayoutX(position.getX());
         this.setLayoutY(position.getY());
     }
-    public abstract void move(Character character, double x, double y);
+    public abstract void move(Element character, double x, double y);
 
     public int getPixelSize() {
         return this.pixelSize;
