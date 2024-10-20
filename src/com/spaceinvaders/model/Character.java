@@ -17,13 +17,15 @@ public abstract class Character extends Element{
 	
 	public abstract void move(double x, double y);
 	public abstract void shoot(Character invasor);
-	public abstract void takeDamage();
+	public void takeDamage() {
+		this.setLives(lives - 1);
+	}
 
 	public int getLives() {
 		return lives;
 	}
 
-	public void setLives(int lives) {
+	private void setLives(int lives) {
 		// alterar pra remover vidas
 		this.lives = lives;
 	}

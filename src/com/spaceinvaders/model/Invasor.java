@@ -6,7 +6,6 @@ import com.spaceinvaders.enums.InvasorType;
 
 public class Invasor extends Character{
 
-	private boolean hit = false;
 	private final InvasorType type;
 	public Invasor(Position position, int lives, double speed_x, InvasorType type, InvasorComponent elementArt) {
 		super(position, lives, speed_x, elementArt);
@@ -18,13 +17,7 @@ public class Invasor extends Character{
 	}
 	public void shoot(Character invasor) {}
 	public void takeDamage() {
-		this.setHitted();
-	}
-	public boolean isHitted() {
-		return this.hit;
-	}
-	public void setHitted() {
-		this.hit = true;
+		super.takeDamage(); // remove uma vida
 	}
 	public InvasorType getType() {
 		return this.type;
@@ -32,5 +25,12 @@ public class Invasor extends Character{
 	@Override
 	public InvasorComponent getPixelArt() {
 		return (InvasorComponent)super.getPixelArt();
+	}
+
+	public void animation(int delay) {
+		
+	}
+	public boolean isAlive() {
+		return this.getLives() != 0;
 	}
 }

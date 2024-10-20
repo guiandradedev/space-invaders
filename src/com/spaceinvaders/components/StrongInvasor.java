@@ -25,7 +25,11 @@ public class StrongInvasor extends InvasorComponent{
             {Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT},
             {Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.GREEN,       Color.GREEN,       Color.GREEN,       Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT},
             {Color.TRANSPARENT, Color.GREEN,       Color.GREEN,       Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.GREEN,       Color.GREEN,       Color.TRANSPARENT},
-            {Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT}
+            {Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.GREEN,       Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT},
+            {Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE},
+            {Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE},
+            {Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE},
+            {Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE},
         };
         for (int y = 0; y < pixels.length; y++) {
             for (int x = 0; x < pixels[y].length; x++) {

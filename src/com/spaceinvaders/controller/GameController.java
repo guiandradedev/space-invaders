@@ -17,10 +17,13 @@ import com.spaceinvaders.model.Position;
 import com.spaceinvaders.utils.Constants;
 
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -41,19 +44,22 @@ public class GameController implements Initializable {
     private final int totalX = Constants.SCREEN_WIDTH - 2*Constants.LIMIT_SCREEN_WIDTH;
     private final int totalY = Constants.SCREEN_HEIGHT - 2*Constants.LIMIT_SCREEN_HEIGHT;
     private final int initialHeight = Constants.LIMIT_SCREEN_HEIGHT + 100;
+    private final int endHeight = totalY + Constants.LIMIT_SCREEN_HEIGHT - (Constants.PLAYER_HEIGHT * Constants.PIXEL_SIZE) - 50 - (Constants.BARRIER_HEIGHT * Constants.PIXEL_SIZE);
     private final int delay = 500; // em ms
-    private final int totalEnemiesInLine = 10;
-    private int totalEnemies;
+    private final int totalEnemiesInLine = 11;
+    private int totalEnemies = 0;
 
     // Variaveis
     private int level = 1;
-    private int initialSpeed = 0;
     private int bullet_speed = 20;
+    private short direction = 1; // true para direita, false para a esquerda 
+    private boolean inGame = true;
+
+    private Timeline timeline;
 
     // Personagens
     private Player player;
     private List<List<Invasor>> invasors = new ArrayList<>();
-    private List<TranslateTransition> transitions = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -61,6 +67,8 @@ public class GameController implements Initializable {
     
         createPlayer();
         generateInvasors(0);
+
+        animation();
     
         Platform.runLater(() -> root.requestFocus());
         root.setOnKeyPressed(this::keyChange);
@@ -75,32 +83,106 @@ public class GameController implements Initializable {
         totalEnemies = 0;
         for (InvasorType type : InvasorType.values()) {
             aux = new ArrayList<>();
-            for(int i=0; i<totalEnemiesInLine; i++) {
-                Invasor invasor = createInvasor(type, i, baseHeight, baseSpeed);
-                aux.add(invasor);
+            for(int i=0; i<type.getLines(); i++) {
+                for(int j=0; j<totalEnemiesInLine; j++) {
+                    Invasor invasor = createInvasor(type, j, baseHeight, baseSpeed);
+                    aux.add(invasor);
+                }
+                totalEnemies += totalEnemiesInLine;
+                baseHeight += (2*Constants.INVASOR_HEIGHT) + 30;
             }
-            totalEnemies += totalEnemiesInLine;
             invasors.add(aux);
-            baseHeight += 100;
         }
     }
 
+    private void animation() {
+        timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> moveAliens(invasors)));
+        timeline.setCycleCount(Timeline.INDEFINITE); // Executa indefinidamente
+        timeline.play(); // Inicia o movimento
+    }
+    
+    private void endGame(boolean won) {
+        if (timeline != null) {
+            timeline.stop();
+        }
+    
+        String info = won ? "Ganhou" : "Perdeu";
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informação Importante");
+            alert.setHeaderText("Voce " + info + "!");
+            // alert.setContentText("um bosta");
+            alert.showAndWait();
+        });
+    }
+    
+
+    private void moveAliens(List<List<Invasor>> invasors){
+        boolean reachedEdge = false;
+        boolean reachedHeight = false;
+        for(List<Invasor> line : invasors){
+            
+            for (Invasor invasor : line) {
+                if(invasor.isAlive()){
+                    if((direction == 1) && (invasor.getPosition().getX() + Constants.INVASOR_WIDTH >= totalX)){
+                        reachedEdge = true;
+                        break;
+                    }else if((direction == -1) && (invasor.getPosition().getX() <= Constants.LIMIT_SCREEN_WIDTH)) {
+                        reachedEdge = true;
+                        break;
+                    }
+                    if(invasor.getPosition().getY() + invasor.getPixelArt().getHeight()/2 >= endHeight){
+                        reachedHeight = true;
+                        break;
+                    }
+                }
+            }
+            if(reachedEdge)
+                break;
+        }
+        if(reachedHeight) {
+            endGame(false);
+            return;
+        }
+        if(reachedEdge){
+            direction *= -1;
+            for(List<Invasor> line : invasors){
+                for (Invasor invasor : line) {
+                    if(invasor.isAlive()){
+                        invasor.getPixelArt().move(invasor, 0, invasor.getPixelArt().getHeight()/2);
+                    }
+                }
+            }
+        }
+        else{
+            // initialHeight
+            for(List<Invasor> line : invasors){
+                for (Invasor invasor : line) {
+                    if(invasor.isAlive()){
+                        invasor.getPixelArt().move(invasor, invasor.getSpeedX()*direction,0);
+                    }
+                }
+            }
+        }
+    }
+
+    
     private Invasor createInvasor(InvasorType invasorType, int positionX, int baseHeight, int speed) {
-        InvasorComponent invasorArt = invasorType.createInvasorArt(invasorType.getWidth(), invasorType.getHeight(), 3);
-        Invasor invasor = new Invasor(new Position((positionX * 50*1.1) + Constants.LIMIT_SCREEN_WIDTH, baseHeight), 1, invasorType.getSpeed() + speed, invasorType, invasorArt);
+        InvasorComponent invasorArt = invasorType.createInvasorArt(Constants.INVASOR_WIDTH, Constants.INVASOR_HEIGHT, Constants.PIXEL_SIZE);
+        Invasor invasor = new Invasor(new Position((positionX * 50*1.2) + Constants.LIMIT_SCREEN_WIDTH, baseHeight), 1, invasorType.getSpeed() + speed, invasorType, invasorArt);
         invasor.print(root);
         return invasor;
     }
 
     private void createPlayer() {
         // Gera o player
-        PlayerArt playerArt = new PlayerArt(Constants.PLAYER_WIDTH, Constants.PLAYER_HEIGHT, 3); 
+        PlayerArt playerArt = new PlayerArt(Constants.PLAYER_WIDTH, Constants.PLAYER_HEIGHT, Constants.PIXEL_SIZE); 
         player = new Player(new Position(Constants.LIMIT_SCREEN_WIDTH + 20, totalY + Constants.LIMIT_SCREEN_HEIGHT - playerArt.getHeight() - 50), 3, 7, 0, 0, playerArt);
         player.print(root);
 
         // Gera a arte das vidas
         for(int i=0; i<player.getLives(); i++) {
-            HearthArt hearthArt = new HearthArt(10, 8, 3, true);
+            HearthArt hearthArt = new HearthArt(10, 8, Constants.PIXEL_SIZE, true);
             hearthArt.print(new Position((i*hearthArt.getWidth()*1.4) + Constants.LIMIT_SCREEN_WIDTH, Constants.SCREEN_HEIGHT - Constants.LIMIT_SCREEN_HEIGHT - 20), root);
         }
     }

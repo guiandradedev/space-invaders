@@ -4,27 +4,23 @@ import com.spaceinvaders.components.FastInvasor;
 import com.spaceinvaders.components.InvasorComponent;
 import com.spaceinvaders.components.MidInvasor;
 import com.spaceinvaders.components.StrongInvasor;
-import com.spaceinvaders.model.Invasor;
-import com.spaceinvaders.model.Position;
 
 public enum InvasorType {
-    StrongInvasor(StrongInvasor.class, 3, 20, 15, 10),
-    MidInvasor(MidInvasor.class, 2, 15, 15, 10), 
-    FastInvasor(FastInvasor.class, 1, 15, 15, 10);
+    StrongInvasor(StrongInvasor.class, 3, 30, 1),
+    MidInvasor(MidInvasor.class, 2, 30, 2), 
+    FastInvasor(FastInvasor.class, 1, 30, 2);
 
     private final int points;
     private final Class<? extends InvasorComponent> invasorClass;
 
-    private final int width;
-    private final int height;
     private final int speed;
+    private final int lines;
 
-    InvasorType(Class<? extends InvasorComponent> invasorClass, int points, int width, int height, int speed) {
+    InvasorType(Class<? extends InvasorComponent> invasorClass, int points, int speed, int lines) {
         this.invasorClass = invasorClass;
         this.points = points;
-        this.width = width;
-        this.height = height;
         this.speed = speed;
+        this.lines = lines;
     }
 
     public int getPoints() {
@@ -48,14 +44,10 @@ public enum InvasorType {
         }
     }
 
-    public int getWidth() {
-        return this.width;
-    }
-    public int getHeight() {
-        return this.height;
-    }
-
     public int getSpeed() {
         return this.speed;
+    }
+    public int getLines() {
+        return this.lines;
     }
 }
