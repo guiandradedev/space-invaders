@@ -14,7 +14,6 @@ public abstract class PixelArt extends Canvas{
         super(width * pixelSize, height * pixelSize);
         this.pixelSize = pixelSize;
     }
-
     public abstract void drawArt();
     public void printArt(Position position) {
         this.drawArt();
@@ -22,10 +21,8 @@ public abstract class PixelArt extends Canvas{
         this.setLayoutX(position.getX());
         this.setLayoutY(position.getY());
     }
-    public abstract void move(Element character, double x, double y);
 
     public int getPixelSize() {
         return this.pixelSize;
     }
-
 }

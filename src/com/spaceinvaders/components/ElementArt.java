@@ -6,7 +6,7 @@ import com.spaceinvaders.utils.Constants;
 
 import javafx.scene.canvas.Canvas;
 
-public abstract class ElementArt extends PixelArt{
+public abstract class ElementArt extends MovableArt{
     // private final Character character;
 
     public ElementArt(int width, int height, int pixelSize) {

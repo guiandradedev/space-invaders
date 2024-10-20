@@ -1,5 +1,6 @@
 package com.spaceinvaders.model;
 
+import com.spaceinvaders.components.PixelArt;
 import com.spaceinvaders.components.PlayerArt;
 
 public class Player extends Character{
@@ -50,4 +51,8 @@ public class Player extends Character{
 		setHits(this.getHits() + 1);
 	}
 	
+	@Override
+	public PlayerArt getPixelArt() {
+		return (PlayerArt)super.getPixelArt();
+	}
 }

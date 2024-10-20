@@ -1,6 +1,8 @@
 package com.spaceinvaders.controller;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.spaceinvaders.components.BulletArt;
@@ -40,6 +42,8 @@ public class GameController implements Initializable {
     private final int totalY = Constants.SCREEN_HEIGHT - 2*Constants.LIMIT_SCREEN_HEIGHT;
     private final int initialHeight = Constants.LIMIT_SCREEN_HEIGHT + 100;
     private final int delay = 500; // em ms
+    private final int totalEnemiesInLine = 10;
+    private int totalEnemies;
 
     // Variaveis
     private int level = 1;
@@ -48,6 +52,8 @@ public class GameController implements Initializable {
 
     // Personagens
     private Player player;
+    private List<List<Invasor>> invasors = new ArrayList<>();
+    private List<TranslateTransition> transitions = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -65,18 +71,25 @@ public class GameController implements Initializable {
 
     public void generateInvasors(int baseSpeed) {
         int baseHeight = initialHeight;
+        List<Invasor> aux;
+        totalEnemies = 0;
         for (InvasorType type : InvasorType.values()) {
-            for(int i=0; i<11; i++) {
-                createInvasor(type, i, baseHeight, baseSpeed);
+            aux = new ArrayList<>();
+            for(int i=0; i<totalEnemiesInLine; i++) {
+                Invasor invasor = createInvasor(type, i, baseHeight, baseSpeed);
+                aux.add(invasor);
             }
+            totalEnemies += totalEnemiesInLine;
+            invasors.add(aux);
             baseHeight += 100;
         }
     }
 
-    private void createInvasor(InvasorType invasorType, int positionX, int baseHeight, int speed) {
+    private Invasor createInvasor(InvasorType invasorType, int positionX, int baseHeight, int speed) {
         InvasorComponent invasorArt = invasorType.createInvasorArt(invasorType.getWidth(), invasorType.getHeight(), 3);
         Invasor invasor = new Invasor(new Position((positionX * 50*1.1) + Constants.LIMIT_SCREEN_WIDTH, baseHeight), 1, invasorType.getSpeed() + speed, invasorType, invasorArt);
         invasor.print(root);
+        return invasor;
     }
 
     private void createPlayer() {
@@ -145,6 +158,10 @@ public class GameController implements Initializable {
             bulletTransition.setByY(-totalY + initialHeight); // Define até onde o tiro vai, sendo y=0 no topo da tela
             bulletTransition.setInterpolator(Interpolator.LINEAR); // Define velocidade constante
             bulletTransition.play();
+
+            bulletTransition.setOnFinished(removeEvent -> {
+                root.getChildren().remove(bulletArt);
+            });
         }
     }
 }

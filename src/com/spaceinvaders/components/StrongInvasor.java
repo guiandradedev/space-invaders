@@ -1,7 +1,5 @@
 package com.spaceinvaders.components;
 
-import com.spaceinvaders.model.Character;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

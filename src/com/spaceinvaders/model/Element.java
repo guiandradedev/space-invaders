@@ -1,15 +1,16 @@
 package com.spaceinvaders.model;
 
 import com.spaceinvaders.components.ElementArt;
+import com.spaceinvaders.components.MovableArt;
 import com.spaceinvaders.components.PixelArt;
 
 import javafx.scene.layout.Pane;
 
-public class Element {
+public abstract class Element {
     private Position position;
-	private PixelArt elementArt;
+	private MovableArt elementArt;
 
-    public Element(Position position, PixelArt elementArt) {
+    public Element(Position position, MovableArt elementArt) {
         setPosition(position);
 		setElementArt(elementArt);
     }
@@ -30,7 +31,7 @@ public class Element {
 		elementArt.printArt(this.getPosition());
 		root.getChildren().add(this.getPixelArt());
 	}
-	private void setElementArt(PixelArt element) {
+	private void setElementArt(MovableArt element) {
 		this.elementArt = element;
 	}
 }

@@ -1,6 +1,7 @@
 package com.spaceinvaders.model;
 
 import com.spaceinvaders.components.InvasorComponent;
+import com.spaceinvaders.components.PlayerArt;
 import com.spaceinvaders.enums.InvasorType;
 
 public class Invasor extends Character{
@@ -28,5 +29,8 @@ public class Invasor extends Character{
 	public InvasorType getType() {
 		return this.type;
 	}
-
+	@Override
+	public InvasorComponent getPixelArt() {
+		return (InvasorComponent)super.getPixelArt();
+	}
 }

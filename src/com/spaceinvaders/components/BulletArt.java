@@ -1,15 +1,13 @@
 package com.spaceinvaders.components;
 
 import com.spaceinvaders.model.Bullet;
-import com.spaceinvaders.model.Character;
 import com.spaceinvaders.model.Element;
 import com.spaceinvaders.model.Position;
 
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class BulletArt extends PixelArt {
+public class BulletArt extends MovableArt {
     public BulletArt(int width, int height, int pixelSize) {
         super(width, height, pixelSize);
         drawArt();
@@ -47,7 +45,6 @@ public class BulletArt extends PixelArt {
         }
     }
 
-    @Override
     public void move(Element target, double x, double y) {
         if(target instanceof Bullet) {
             Bullet bullet = (Bullet)target;

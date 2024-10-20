@@ -9,7 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-public class HearthArt extends PixelArt{
+public class HearthArt extends StaticArt{
     private boolean active;
 
     public HearthArt(int width, int height, int pixelSize, boolean active) {
@@ -48,11 +48,5 @@ public class HearthArt extends PixelArt{
                 gc.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
             }
         }
-    }
-
-    @Override
-    public void move(Element target, double x, double y) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'move'");
     }
 }

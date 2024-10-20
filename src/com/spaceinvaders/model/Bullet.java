@@ -2,6 +2,7 @@ package com.spaceinvaders.model;
 
 import com.spaceinvaders.components.BulletArt;
 import com.spaceinvaders.components.ElementArt;
+import com.spaceinvaders.components.PlayerArt;
 
 public class Bullet extends Element{
 	private double speed_y;
@@ -21,6 +22,10 @@ public class Bullet extends Element{
 	}
 	private void setBulletArt(BulletArt element) {
 		this.bulletArt = element;
+	}
+	@Override
+	public BulletArt getPixelArt() {
+		return (BulletArt)super.getPixelArt();
 	}
 	
 
