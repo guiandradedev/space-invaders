@@ -8,9 +8,9 @@ import javafx.scene.layout.Pane;
 
 public abstract class Element {
     private Position position;
-	private MovableArt elementArt;
+	private PixelArt elementArt;
 
-    public Element(Position position, MovableArt elementArt) {
+    public Element(Position position, PixelArt elementArt) {
         setPosition(position);
 		setElementArt(elementArt);
     }
@@ -31,7 +31,7 @@ public abstract class Element {
 		elementArt.printArt(this.getPosition());
 		root.getChildren().add(this.getPixelArt());
 	}
-	private void setElementArt(MovableArt element) {
+	private void setElementArt(PixelArt element) {
 		this.elementArt = element;
 	}
 }

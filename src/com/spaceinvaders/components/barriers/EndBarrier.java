@@ -1,6 +1,6 @@
 package com.spaceinvaders.components.barriers;
 
-public class EndBarrier extends Barrier{
+public class EndBarrier extends BarrierArt{
     public EndBarrier(int width, int height, int pixelSize) {
         super(width, height, pixelSize);
         drawArt();

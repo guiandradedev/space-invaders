@@ -6,9 +6,9 @@ import com.spaceinvaders.components.MidInvasor;
 import com.spaceinvaders.components.StrongInvasor;
 
 public enum InvasorType {
-    StrongInvasor(StrongInvasor.class, 3, 30, 1),
-    MidInvasor(MidInvasor.class, 2, 30, 2), 
-    FastInvasor(FastInvasor.class, 1, 30, 2);
+    StrongInvasor(StrongInvasor.class, 3, 3, 1),
+    MidInvasor(MidInvasor.class, 2, 3, 2), 
+    FastInvasor(FastInvasor.class, 1, 3, 2);
 
     private final int points;
     private final Class<? extends InvasorComponent> invasorClass;

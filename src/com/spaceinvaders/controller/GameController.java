@@ -9,7 +9,9 @@ import com.spaceinvaders.components.BulletArt;
 import com.spaceinvaders.components.HearthArt;
 import com.spaceinvaders.components.InvasorComponent;
 import com.spaceinvaders.components.PlayerArt;
+import com.spaceinvaders.components.barriers.InitialBarrier;
 import com.spaceinvaders.enums.InvasorType;
+import com.spaceinvaders.model.Barrier;
 import com.spaceinvaders.model.Bullet;
 import com.spaceinvaders.model.Invasor;
 import com.spaceinvaders.model.Player;
@@ -44,14 +46,14 @@ public class GameController implements Initializable {
     private final int totalX = Constants.SCREEN_WIDTH - 2*Constants.LIMIT_SCREEN_WIDTH;
     private final int totalY = Constants.SCREEN_HEIGHT - 2*Constants.LIMIT_SCREEN_HEIGHT;
     private final int initialHeight = Constants.LIMIT_SCREEN_HEIGHT + 100;
-    private final int endHeight = totalY + Constants.LIMIT_SCREEN_HEIGHT - (Constants.PLAYER_HEIGHT * Constants.PIXEL_SIZE) - 50 - (Constants.BARRIER_HEIGHT * Constants.PIXEL_SIZE);
+    private final int endHeight = totalY + Constants.LIMIT_SCREEN_HEIGHT - (Constants.PLAYER_HEIGHT * Constants.PIXEL_SIZE) - 50 - (Constants.BARRIER_HEIGHT * Constants.PIXEL_SIZE) - 20;
     private final int delay = 500; // em ms
     private final int totalEnemiesInLine = 11;
     private int totalEnemies = 0;
 
     // Variaveis
     private int level = 1;
-    private int bullet_speed = 20;
+    private int bullet_speed = 15;
     private short direction = 1; // true para direita, false para a esquerda 
     private boolean inGame = true;
 
@@ -67,6 +69,7 @@ public class GameController implements Initializable {
     
         createPlayer();
         generateInvasors(0);
+        createBarriers();
 
         animation();
     
@@ -76,6 +79,13 @@ public class GameController implements Initializable {
         root.requestFocus();
     }
     
+    private void createBarriers() {
+        for(int i=0; i<4; i++) {
+            InitialBarrier barrierArt = new InitialBarrier(Constants.BARRIER_WIDTH, Constants.BARRIER_HEIGHT, Constants.PIXEL_SIZE);
+            Barrier barrier = new Barrier(new Position((i * 50 * 3.5) + Constants.LIMIT_SCREEN_WIDTH + 50, endHeight), barrierArt);
+            barrierArt.print(barrier.getPosition(), root);
+        }
+    }
 
     public void generateInvasors(int baseSpeed) {
         int baseHeight = initialHeight;
@@ -155,7 +165,6 @@ public class GameController implements Initializable {
             }
         }
         else{
-            // initialHeight
             for(List<Invasor> line : invasors){
                 for (Invasor invasor : line) {
                     if(invasor.isAlive()){

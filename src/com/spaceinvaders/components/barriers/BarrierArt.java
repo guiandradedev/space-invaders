@@ -5,8 +5,8 @@ import com.spaceinvaders.model.Position;
 
 import javafx.scene.layout.Pane;
 
-public abstract class Barrier extends StaticArt{
-    public Barrier(int width, int height, int pixelSize) {
+public abstract class BarrierArt extends StaticArt{
+    public BarrierArt(int width, int height, int pixelSize) {
         super(width, height, pixelSize);
     }
 
