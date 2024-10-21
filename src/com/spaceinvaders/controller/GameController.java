@@ -92,6 +92,10 @@ public class GameController implements Initializable {
 
     private void startGame() {
         invasorsKilled = 0;
+        hitsLabel.setText("Tiros: 0");
+        pointsLabel.setText("Pontos: 0");
+        direction = 1;
+        
         createPlayer();
         generateInvasors(0);
         createBarriers();
@@ -154,8 +158,6 @@ public class GameController implements Initializable {
             alert.showAndWait().ifPresent(response -> {
                 if (response == customButton) {
                     root.getChildren().remove(player.getPixelArt());
-                    hitsLabel.setText("Tiros: 0");
-                    pointsLabel.setText("Pontos: 0");
 
                     for(List<Invasor> line : invasors) {
                         for(Invasor invasor : line) {
@@ -321,8 +323,8 @@ public class GameController implements Initializable {
                             if (bulletArt.getBoundsInParent().intersects(invasor.getPixelArt().getBoundsInParent()) && !isValidated[0] && invasor.isAlive()) {
                                 isValidated[0] = true;
 
-                                System.out.println("Bala "+ bulletArt.getBoundsInParent());
-                                System.out.println("Invasor "+invasor.getPixelArt().getBoundsInParent());
+                                // System.out.println("Bala "+ bulletArt.getBoundsInParent());
+                                // System.out.println("Invasor "+invasor.getPixelArt().getBoundsInParent());
 
                                 player.shoot(invasor, root);
                                 

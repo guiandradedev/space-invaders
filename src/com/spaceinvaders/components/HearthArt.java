@@ -18,13 +18,6 @@ public class HearthArt extends StaticArt{
         drawArt();
     }
 
-    public void print(Position position, Pane root) {
-        this.setLayoutX(position.getX());
-        this.setLayoutY(position.getY());
-
-        root.getChildren().add(this);
-    }
-
     public void drawArt() {
         GraphicsContext gc = getGraphicsContext2D();
         int pixelSize = this.getPixelSize();

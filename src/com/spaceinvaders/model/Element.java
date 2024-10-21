@@ -31,7 +31,7 @@ public abstract class Element {
 		elementArt.printArt(this.getPosition());
 		root.getChildren().add(this.getPixelArt());
 	}
-	private void setElementArt(PixelArt element) {
+	public void setElementArt(PixelArt element) {
 		this.elementArt = element;
 	}
 }

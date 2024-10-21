@@ -16,7 +16,10 @@ public class Player extends Character{
 		setPoints(points);
 		setHits(hits);
 	}
-	
+	public void changeSprintWhenDie(Pane root){
+		// fazer
+		root.getChildren().remove(this.getPixelArt());
+	}
 	public void move(double x, double y) {
 		this.getPosition().setPosition(x,y);
 	}

@@ -44,13 +44,6 @@ public class BarrierArt extends StaticArt{
         };
     }
 
-    public void print(Position position, Pane root) {
-        this.setLayoutX(position.getX());
-        this.setLayoutY(position.getY());
-
-        root.getChildren().add(this);
-    }
-
     @Override
     public void drawArt() {
         GraphicsContext gc = getGraphicsContext2D();
@@ -59,7 +52,6 @@ public class BarrierArt extends StaticArt{
         // Color trans = Color.TRANSPARENT;
         // Color verde = Color.GREEN;
 
-            
         // Color[][] pixels = {
         //     {trans, trans, trans, trans, trans, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, trans, trans, trans, trans, trans},
         //     {trans, trans, trans, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, verde, trans, trans, trans},
@@ -86,7 +78,6 @@ public class BarrierArt extends StaticArt{
         //     {verde, verde, verde, verde, verde, verde, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, verde, verde, verde, verde, verde, verde},
         //     {verde, verde, verde, verde, verde, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, verde, verde, verde, verde, verde},
         //     {verde, verde, verde, verde, verde, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, trans, verde, verde, verde, verde, verde},
-
         // };
 
         for (int y = 0; y < pixels.length; y++) {
