@@ -27,6 +27,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -68,6 +70,7 @@ public class GameController implements Initializable {
     // Personagens
     private Player player;
     private List<List<Invasor>> invasors = new ArrayList<>();
+    private List<Barrier> barriers = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -91,16 +94,19 @@ public class GameController implements Initializable {
     }
     
     private void createBarriers() {
+        barriers = new ArrayList<>();
         for(int i=0; i<4; i++) {
             InitialBarrier barrierArt = new InitialBarrier(Constants.BARRIER_WIDTH, Constants.BARRIER_HEIGHT, Constants.PIXEL_SIZE);
             Barrier barrier = new Barrier(new Position((i * 50 * 3.5) + Constants.LIMIT_SCREEN_WIDTH + 50, endHeight), barrierArt);
             barrierArt.print(barrier.getPosition(), root);
+            barriers.add(barrier);
         }
     }
 
     public void generateInvasors(int baseSpeed) {
         int baseHeight = initialHeight;
         List<Invasor> aux;
+        invasors = new ArrayList<>();
         totalEnemies = 0;
         for (InvasorType type : InvasorType.values()) {
             aux = new ArrayList<>();
@@ -302,6 +308,7 @@ public class GameController implements Initializable {
 
                 @Override
                 public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+                   // Verifica colisao com inimigos
                     int i=0;
                     for(List<Invasor> line : invasors) {
                         for(Invasor invasor : line) {
@@ -326,6 +333,28 @@ public class GameController implements Initializable {
                             i++;
                         }
                     }
+
+                    // // Verifica colisao com barreiras
+                    // for(Barrier barrier : barriers) {
+                    //     Bounds bulletBound = bulletArt.getBoundsInParent();
+                    //     Bounds barrierBound = barrier.getPixelArt().getBoundsInParent();
+                    //     if (bulletBound.intersects(barrierBound)) {
+                    //         double xMin = Math.max(bulletBound.getMinX(), barrierBound.getMinX());
+                    //         double xMax = Math.min(bulletBound.getMaxX(), barrierBound.getMaxX());
+                    //         double yMin = Math.max(bulletBound.getMinY(), barrierBound.getMinY());
+                    //         double yMax = Math.min(bulletBound.getMaxY(), barrierBound.getMaxY());
+
+                    //         // Verifica se realmente há interseção
+                    //         if (xMin < xMax && yMin < yMax) {
+                    //             System.out.println("Interseção em: " + xMin + "," + yMin + " até " + xMax + "," + yMax);
+                    //         }
+
+                    //         bulletTransition.stop();
+                    //         root.getChildren().remove(bulletArt);
+                    //         bulletTransition.currentTimeProperty().removeListener(this);
+
+                    //     }
+                    // }
                 }
             });
 
