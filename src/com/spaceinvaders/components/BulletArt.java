@@ -18,7 +18,7 @@ public class BulletArt extends MovableArt {
         this.drawArt();
 
         position.setY(position.getY() - this.getHeight() - 2);
-        position.setX(position.getX() + (this.getPixelSize() * this.getWidth())/2 + 2);
+        position.setX(position.getX() + (this.getPixelSize() * this.getWidth())/2 + 11);
 
         this.setLayoutX(position.getX());
         this.setLayoutY(position.getY());
@@ -33,8 +33,7 @@ public class BulletArt extends MovableArt {
             {Color.RED},
             {Color.RED},
             {Color.RED},
-            {Color.RED
-            }
+            {Color.RED}
         };
 
         for (int y = 0; y < pixels.length; y++) {

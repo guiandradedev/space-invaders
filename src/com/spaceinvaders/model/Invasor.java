@@ -4,6 +4,8 @@ import com.spaceinvaders.components.InvasorComponent;
 import com.spaceinvaders.components.PlayerArt;
 import com.spaceinvaders.enums.InvasorType;
 
+import javafx.scene.layout.Pane;
+
 public class Invasor extends Character{
 
 	private final InvasorType type;
@@ -15,9 +17,9 @@ public class Invasor extends Character{
 	public void move(double x, double y) {
 		this.getPosition().setPosition(x,y);
 	}
-	public void shoot(Character invasor) {}
-	public void takeDamage() {
-		super.takeDamage(); // remove uma vida
+	public void shoot(Character invasor, Pane root) {}
+	public void takeDamage(Pane root) {
+		super.takeDamage(root); // remove uma vida
 	}
 	public InvasorType getType() {
 		return this.type;

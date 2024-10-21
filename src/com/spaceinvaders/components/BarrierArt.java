@@ -1,20 +1,31 @@
-package com.spaceinvaders.components.barriers;
+package com.spaceinvaders.components;
+
+import com.spaceinvaders.model.Intersection;
+import com.spaceinvaders.model.Position;
+import com.spaceinvaders.utils.Constants;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-public class InitialBarrier extends BarrierArt{
-    public InitialBarrier(int width, int height, int pixelSize) {
+public class BarrierArt extends StaticArt{
+    public BarrierArt(int width, int height, int pixelSize) {
         super(width, height, pixelSize);
-        drawArt();
     }
 
-@Override
+    private Color[][] pixels = new Color[Constants.BARRIER_WIDTH][Constants.BARRIER_HEIGHT];
+
+    public void print(Position position, Pane root) {
+        this.setLayoutX(position.getX());
+        this.setLayoutY(position.getY());
+
+        root.getChildren().add(this);
+    }
+
+    @Override
     public void drawArt() {
         GraphicsContext gc = getGraphicsContext2D();
         int pixelSize = this.getPixelSize();
-
-        Color[][] pixels = new Color[24][24];
 
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 24; j++) {
@@ -36,6 +47,19 @@ public class InitialBarrier extends BarrierArt{
         }
     }
 
-
+    public void repaint(Intersection intersection) {
+        int pixelX = (int) ((intersection.getMidPointX() - this.getLayoutX()) / Constants.PIXEL_SIZE);
+        int pixelY = (int) ((intersection.getMidPointY() - this.getLayoutY()) / Constants.PIXEL_SIZE);
     
+        if (pixelX >= 0 && pixelX < pixels.length && pixelY >= 0 && pixelY < pixels[0].length) {
+            pixels[pixelX][pixelY] = Color.BLUEVIOLET;
+        }
+
+        GraphicsContext gc = getGraphicsContext2D();
+        int pixelSize = this.getPixelSize();
+    
+        gc.setFill(pixels[pixelX][pixelY]);
+        gc.fillRect(pixelX * pixelSize, pixelY * pixelSize, pixelSize, pixelSize);
+    
+    }
 }

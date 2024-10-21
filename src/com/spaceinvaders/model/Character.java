@@ -16,9 +16,13 @@ public abstract class Character extends Element{
 	}
 	
 	public abstract void move(double x, double y);
-	public abstract void shoot(Character invasor);
-	public void takeDamage() {
+	public abstract void shoot(Character invasor, Pane root);
+	public void takeDamage(Pane root) {
 		this.setLives(lives - 1);
+
+		if(this.getLives() <= 0) {
+			root.getChildren().remove(this.getPixelArt());
+		}
 	}
 
 	public int getLives() {

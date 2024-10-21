@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.spaceinvaders.components.BarrierArt;
 import com.spaceinvaders.components.BulletArt;
 import com.spaceinvaders.components.HearthArt;
 import com.spaceinvaders.components.InvasorComponent;
 import com.spaceinvaders.components.PlayerArt;
-import com.spaceinvaders.components.barriers.InitialBarrier;
 import com.spaceinvaders.enums.InvasorType;
 import com.spaceinvaders.model.Barrier;
 import com.spaceinvaders.model.Bullet;
+import com.spaceinvaders.model.Intersection;
 import com.spaceinvaders.model.Invasor;
 import com.spaceinvaders.model.Player;
 import com.spaceinvaders.model.Position;
@@ -96,9 +97,9 @@ public class GameController implements Initializable {
     private void createBarriers() {
         barriers = new ArrayList<>();
         for(int i=0; i<4; i++) {
-            InitialBarrier barrierArt = new InitialBarrier(Constants.BARRIER_WIDTH, Constants.BARRIER_HEIGHT, Constants.PIXEL_SIZE);
+            BarrierArt barrierArt = new BarrierArt(Constants.BARRIER_WIDTH, Constants.BARRIER_HEIGHT, Constants.PIXEL_SIZE);
             Barrier barrier = new Barrier(new Position((i * 50 * 3.5) + Constants.LIMIT_SCREEN_WIDTH + 50, endHeight), barrierArt);
-            barrierArt.print(barrier.getPosition(), root);
+            barrier.print(root);;
             barriers.add(barrier);
         }
     }
@@ -282,7 +283,7 @@ public class GameController implements Initializable {
             hitsLabel.setText("Tiros: "+player.getHits());
 
             // Gera a arte do tiro
-            BulletArt bulletArt = new BulletArt(1, 3, 5);
+            BulletArt bulletArt = new BulletArt(1, 4, Constants.PIXEL_SIZE);
             Bullet bullet = new Bullet(new Position(player.getPosition().getX(), player.getPosition().getY()), bullet_speed, bulletArt);
             bullet.print(root);
     
@@ -318,7 +319,7 @@ public class GameController implements Initializable {
                                 System.out.println("Bala "+ bulletArt.getBoundsInParent());
                                 System.out.println("Invasor "+invasor.getPixelArt().getBoundsInParent());
 
-                                player.shoot(invasor);
+                                player.shoot(invasor, root);
                                 
                                 // System.out.println("Colisão detectada!" + invasor.getClass() + " " + invasor.getPixelArt().getLayoutX() + " " + i);
                                 pointsLabel.setText("Pontos: "+player.getPoints());
@@ -334,27 +335,27 @@ public class GameController implements Initializable {
                         }
                     }
 
-                    // // Verifica colisao com barreiras
-                    // for(Barrier barrier : barriers) {
-                    //     Bounds bulletBound = bulletArt.getBoundsInParent();
-                    //     Bounds barrierBound = barrier.getPixelArt().getBoundsInParent();
-                    //     if (bulletBound.intersects(barrierBound)) {
-                    //         double xMin = Math.max(bulletBound.getMinX(), barrierBound.getMinX());
-                    //         double xMax = Math.min(bulletBound.getMaxX(), barrierBound.getMaxX());
-                    //         double yMin = Math.max(bulletBound.getMinY(), barrierBound.getMinY());
-                    //         double yMax = Math.min(bulletBound.getMaxY(), barrierBound.getMaxY());
+                    // Verifica colisao com barreiras
+                    for(Barrier barrier : barriers) {
+                        Bounds bulletBound = bulletArt.getBoundsInParent();
+                        Bounds barrierBound = barrier.getPixelArt().getBoundsInParent();
+                        
+                        // Adicionar validacao para caso esteja transparente 
+                        if (bulletBound.intersects(barrierBound)) {
 
-                    //         // Verifica se realmente há interseção
-                    //         if (xMin < xMax && yMin < yMax) {
-                    //             System.out.println("Interseção em: " + xMin + "," + yMin + " até " + xMax + "," + yMax);
-                    //         }
+                            Position min = new Position(Math.max(bulletBound.getMinX(), barrierBound.getMinX()), Math.max(bulletBound.getMinY(), barrierBound.getMinY()));
+                            Position max = new Position(Math.min(bulletBound.getMaxX(), barrierBound.getMaxX()), Math.min(bulletBound.getMaxY(), barrierBound.getMaxY()));
 
-                    //         bulletTransition.stop();
-                    //         root.getChildren().remove(bulletArt);
-                    //         bulletTransition.currentTimeProperty().removeListener(this);
+                            Intersection intersection = new Intersection(min, max);
 
-                    //     }
-                    // }
+                            barrier.takeDamage(intersection);
+
+                            bulletTransition.stop();
+                            root.getChildren().remove(bulletArt);
+                            bulletTransition.currentTimeProperty().removeListener(this);
+
+                        }
+                    }
                 }
             });
 

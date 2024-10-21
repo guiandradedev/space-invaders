@@ -3,6 +3,8 @@ package com.spaceinvaders.model;
 import com.spaceinvaders.components.PixelArt;
 import com.spaceinvaders.components.PlayerArt;
 
+import javafx.scene.layout.Pane;
+
 public class Player extends Character{
 	private int points;
 	private int hits;
@@ -18,11 +20,11 @@ public class Player extends Character{
 	public void move(double x, double y) {
 		this.getPosition().setPosition(x,y);
 	}
-	public void shoot(Character character) {
+	public void shoot(Character character, Pane root) {
 		if(character instanceof Invasor) {
 			Invasor invasor = (Invasor) character; // Fazendo o casting
 
-			invasor.takeDamage();
+			invasor.takeDamage(root);
 			addPoints(invasor.getType().getPoints());
 		} else {
 			throw new IllegalArgumentException("Parametro inválido");
