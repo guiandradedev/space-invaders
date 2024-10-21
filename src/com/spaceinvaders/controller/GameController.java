@@ -132,6 +132,7 @@ public class GameController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Informação Importante");
             alert.setHeaderText("Você " + info + "!");
+            alert.setContentText("Total de pontos obtidos: " + player.getPoints());
 
             ButtonType customButton = new ButtonType("Recomeçar", ButtonBar.ButtonData.OK_DONE);
             ButtonType closeButton = new ButtonType("Sair", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -140,6 +141,16 @@ public class GameController implements Initializable {
 
             alert.showAndWait().ifPresent(response -> {
                 if (response == customButton) {
+                    root.getChildren().remove(player.getPixelArt());
+                    hitsLabel.setText("Tiros: 0");
+                    pointsLabel.setText("Pontos: 0");
+
+                    for(List<Invasor> line : invasors) {
+                        for(Invasor invasor : line) {
+                            root.getChildren().remove(invasor.getPixelArt());
+                        }
+                    }
+
                     startGame();
                 } else {
                     Alert secondAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -296,6 +307,9 @@ public class GameController implements Initializable {
                         for(Invasor invasor : line) {
                             if (bulletArt.getBoundsInParent().intersects(invasor.getPixelArt().getBoundsInParent()) && !isValidated[0] && invasor.isAlive()) {
                                 isValidated[0] = true;
+
+                                System.out.println("Bala "+ bulletArt.getBoundsInParent());
+                                System.out.println("Invasor "+invasor.getPixelArt().getBoundsInParent());
 
                                 player.shoot(invasor);
                                 
