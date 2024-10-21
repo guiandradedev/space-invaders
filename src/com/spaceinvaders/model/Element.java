@@ -1,6 +1,7 @@
 package com.spaceinvaders.model;
 
 import com.spaceinvaders.components.ElementArt;
+import com.spaceinvaders.components.InvasorDeadArt;
 import com.spaceinvaders.components.MovableArt;
 import com.spaceinvaders.components.PixelArt;
 

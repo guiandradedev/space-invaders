@@ -6,7 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-public class InvasorDeadArt extends StaticArt{
+public class InvasorDeadArt extends InvasorComponent{
     public InvasorDeadArt(int width, int height, int pixelSize) {
         super(width, height, pixelSize);
         drawArt();

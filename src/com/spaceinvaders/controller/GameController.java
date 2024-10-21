@@ -95,7 +95,7 @@ public class GameController implements Initializable {
         hitsLabel.setText("Tiros: 0");
         pointsLabel.setText("Pontos: 0");
         direction = 1;
-        
+
         createPlayer();
         generateInvasors(0);
         createBarriers();
@@ -132,39 +132,34 @@ public class GameController implements Initializable {
         }
     }
 
-    private void animation() {
-        timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> moveAliens(invasors)));
-        timeline.setCycleCount(Timeline.INDEFINITE); // Executa indefinidamente
-        timeline.play(); // Inicia o movimento
-    }
     
     private void endGame(boolean won) {
         if (timeline != null) {
             timeline.stop();
         }
-    
+        
         String info = won ? "Ganhou" : "Perdeu";
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Informação Importante");
             alert.setHeaderText("Você " + info + "!");
             alert.setContentText("Total de pontos obtidos: " + player.getPoints());
-
+            
             ButtonType customButton = new ButtonType("Recomeçar", ButtonBar.ButtonData.OK_DONE);
             ButtonType closeButton = new ButtonType("Sair", ButtonBar.ButtonData.CANCEL_CLOSE);
-
+            
             alert.getButtonTypes().setAll(customButton, closeButton);
-
+            
             alert.showAndWait().ifPresent(response -> {
                 if (response == customButton) {
                     root.getChildren().remove(player.getPixelArt());
-
+                    
                     for(List<Invasor> line : invasors) {
                         for(Invasor invasor : line) {
                             root.getChildren().remove(invasor.getPixelArt());
                         }
                     }
-
+                    
                     startGame();
                 } else {
                     Alert secondAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -172,7 +167,7 @@ public class GameController implements Initializable {
                     secondAlert.setHeaderText("Obrigado por jogar");
                     secondAlert.setContentText("O programa será encerrado.");
                     secondAlert.showAndWait();
-
+                    
                     Platform.exit(); // Fecha o programa
                     System.exit(0); // Finaliza a aplicação
                 }
@@ -180,12 +175,16 @@ public class GameController implements Initializable {
         });
     }
     
-
+    private void animation() {
+        timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> moveAliens(invasors)));
+        timeline.setCycleCount(Timeline.INDEFINITE); // Executa indefinidamente
+        timeline.play(); // Inicia o movimento
+    }
+    
     private void moveAliens(List<List<Invasor>> invasors){
         boolean reachedEdge = false;
         boolean reachedHeight = false;
         for(List<Invasor> line : invasors){
-            
             for (Invasor invasor : line) {
                 if(invasor.isAlive()){
                     if((direction == 1) && (invasor.getPosition().getX() + Constants.INVASOR_WIDTH >= totalX)){
@@ -332,7 +331,6 @@ public class GameController implements Initializable {
                                 pointsLabel.setText("Pontos: "+player.getPoints());
                                 
                                 bulletTransition.stop();
-                                root.getChildren().remove(invasor.getPixelArt());
                                 root.getChildren().remove(bulletArt);
                                 bulletTransition.currentTimeProperty().removeListener(this);
 

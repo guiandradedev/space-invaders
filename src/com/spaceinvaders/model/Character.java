@@ -30,7 +30,7 @@ public abstract class Character extends Element{
 		return lives;
 	}
 
-	private void setLives(int lives) {
+	protected void setLives(int lives) {
 		// alterar pra remover vidas
 		this.lives = lives;
 	}

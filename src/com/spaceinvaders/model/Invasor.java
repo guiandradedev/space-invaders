@@ -42,21 +42,41 @@ public class Invasor extends Character{
 		return this.getLives() != 0;
 	}
 
-	public void changeSprintWhenDie(Pane root){
+	public void changeSprintWhenDie(Pane root) {
 		InvasorComponent invasorComponent = this.getPixelArt();
 		root.getChildren().remove(invasorComponent);
-
-		InvasorDeadArt invasorDeadArt = new InvasorDeadArt((int)invasorComponent.getWidth() / invasorComponent.getPixelSize(), (int)invasorComponent.getHeight() / invasorComponent.getPixelSize(), (int)invasorComponent.getPixelSize());
-		invasorDeadArt.print(getPosition(), root);
+	
+		InvasorDeadArt invasorDeadArt = new InvasorDeadArt(
+			(int) invasorComponent.getWidth() / invasorComponent.getPixelSize(),
+			(int) invasorComponent.getHeight() / invasorComponent.getPixelSize(),
+			(int) invasorComponent.getPixelSize()
+		);
 		
+		
+		this.setLives(1);
+		/*
+		 * Gambiarra aqui
+		 * 
+		 * O setLives era pra ser private, no entanto ao morrer a animação so vai continuar se ele manter uma vida,
+		 * ja q o delay pra remover o alien é maior que o delay do keyframe
+		 * pra resolver isso deixei o setLives protected pra aumentar a vida temporariamente e retornar ao 0 quando remover da tela
+		 *
+		 * */
+
+
+		setElementArt(invasorDeadArt);
+		print(root);
+
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				Platform.runLater(() -> {
+					setLives(0);
 					root.getChildren().remove(invasorDeadArt);
 				});
 			}
 		}, 500);
 	}
+	
 }
