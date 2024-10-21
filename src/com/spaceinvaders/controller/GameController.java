@@ -30,13 +30,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.util.Timer;
@@ -340,20 +345,39 @@ public class GameController implements Initializable {
                         Bounds bulletBound = bulletArt.getBoundsInParent();
                         Bounds barrierBound = barrier.getPixelArt().getBoundsInParent();
                         
-                        // Adicionar validacao para caso esteja transparente 
                         if (bulletBound.intersects(barrierBound)) {
 
+                            // Encontra a intersecção da colisão
                             Position min = new Position(Math.max(bulletBound.getMinX(), barrierBound.getMinX()), Math.max(bulletBound.getMinY(), barrierBound.getMinY()));
                             Position max = new Position(Math.min(bulletBound.getMaxX(), barrierBound.getMaxX()), Math.min(bulletBound.getMaxY(), barrierBound.getMaxY()));
-
                             Intersection intersection = new Intersection(min, max);
 
-                            barrier.takeDamage(intersection);
+                            // Confirma que realmente existe intersecção
+                            if(intersection.hasIntersection()) {
+                                double intersectX = min.getX() - barrierBound.getMinX();
+                                double intersectY = min.getY() - barrierBound.getMinY();
 
-                            bulletTransition.stop();
-                            root.getChildren().remove(bulletArt);
-                            bulletTransition.currentTimeProperty().removeListener(this);
+                                // Transforma a imagem
+                                WritableImage snapshot = new WritableImage((int) barrier.getPixelArt().getWidth(), (int) barrier.getPixelArt().getHeight());
+                                barrier.getPixelArt().snapshot(null, snapshot);
+                                PixelReader pixelReader = snapshot.getPixelReader();
 
+                                if (pixelReader != null) {
+                                    int pixelX = (int) Math.floor(intersectX);
+                                    int pixelY = (int) Math.floor(intersectY);
+                                    // int pixelX = (int) Math.floor(intersection.getMidPointX());
+                                    // int pixelY = (int) Math.floor(intersection.getMidPointY());
+
+                                    Color color = pixelReader.getColor(pixelX, pixelY);
+                                    if(color.equals(Color.GREEN)) {
+                                        barrier.takeDamage(intersection);
+                                        
+                                        bulletTransition.stop();
+                                        root.getChildren().remove(bulletArt);
+                                        bulletTransition.currentTimeProperty().removeListener(this);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
