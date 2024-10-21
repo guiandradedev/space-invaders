@@ -346,7 +346,7 @@ public class GameController implements Initializable {
                         Bounds barrierBound = barrier.getPixelArt().getBoundsInParent();
                         
                         if (bulletBound.intersects(barrierBound)) {
-
+                    
                             // Encontra a intersecção da colisão
                             Position min = new Position(Math.max(bulletBound.getMinX(), barrierBound.getMinX()), Math.max(bulletBound.getMinY(), barrierBound.getMinY()));
                             Position max = new Position(Math.min(bulletBound.getMaxX(), barrierBound.getMaxX()), Math.min(bulletBound.getMaxY(), barrierBound.getMaxY()));
@@ -365,8 +365,6 @@ public class GameController implements Initializable {
                                 if (pixelReader != null) {
                                     int pixelX = (int) Math.floor(intersectX);
                                     int pixelY = (int) Math.floor(intersectY);
-                                    // int pixelX = (int) Math.floor(intersection.getMidPointX());
-                                    // int pixelY = (int) Math.floor(intersection.getMidPointY());
 
                                     Color color = pixelReader.getColor(pixelX, pixelY);
                                     if(color.equals(Color.GREEN)) {

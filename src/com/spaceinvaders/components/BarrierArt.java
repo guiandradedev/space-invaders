@@ -100,25 +100,25 @@ public class BarrierArt extends StaticArt{
     public void repaint(Intersection intersection) {
         int pixelX = (int) ((intersection.getMidPointX() - this.getLayoutX()) / Constants.PIXEL_SIZE);
         int pixelY = (int) ((intersection.getMidPointY() - this.getLayoutY()) / Constants.PIXEL_SIZE);
-        // System.out.println(pixels[0][0]);
-        int radius = 2;
+
+        int radius = 4;
         GraphicsContext gc = getGraphicsContext2D();
         int pixelSize = this.getPixelSize();
 
+        int startX = Math.max(pixelX - radius, 0);
+        int startY = Math.max(pixelY - radius, 0);
+
         if (pixelX >= 0 && pixelX < pixels.length && pixelY >= 0 && pixelY < pixels[0].length) {
-            // pixels[pixelY][pixelX] = Color.BLUEVIOLET;
-            for (int i = pixelX-radius; i < pixelX + radius || i < pixels.length; i++) {
-                for (int j = pixelY - radius; j < pixelY + radius || j < pixels[i].length; j++) {
+            for (int i = startX; i < pixelX + radius && i < Constants.BARRIER_WIDTH; i++) {
+                for (int j = startY; j < pixelY + radius && i < Constants.BARRIER_HEIGHT; j++) {
                     // Verificar se as coordenadas estão dentro dos limites da matriz
                     if (i < pixels.length && j < pixels[i].length) {
                         gc.clearRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
-                        pixels[j][i] = Color.TRANSPARENT;  // Alterar o valor da matriz
+                        pixels[j][i] = Color.TRANSPARENT;
                     }
                 }
             }
         }
-
-
 
         for (int y = 0; y < pixels.length; y++) {
             for (int x = 0; x < pixels[y].length; x++) {
