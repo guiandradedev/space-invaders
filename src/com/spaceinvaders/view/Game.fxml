@@ -13,12 +13,12 @@
             <Font size="36.0" />
          </font>
       </Label>
-      <Label fx:id="hitsLabel" layoutX="600.0" layoutY="30.0" text="Tiros: 0" textFill="#00ff2b">
+      <Label fx:id="hitsLabel" layoutX="500.0" layoutY="30.0" text="Tiros: 0" textFill="#00ff2b">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="pointsLabel" layoutX="700.0" layoutY="30.0" text="Pontos: 0" textFill="#00ff2b">
+      <Label fx:id="pointsLabel" layoutX="600.0" layoutY="30.0" text="Pontos: 0" textFill="#00ff2b">
          <font>
             <Font size="14.0" />
          </font>

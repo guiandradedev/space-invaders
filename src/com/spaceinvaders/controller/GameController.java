@@ -23,9 +23,14 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -53,9 +58,10 @@ public class GameController implements Initializable {
 
     // Variaveis
     private int level = 1;
-    private int bullet_speed = 15;
+    private int bullet_speed = 30
+    ;
     private short direction = 1; // true para direita, false para a esquerda 
-    private boolean inGame = true;
+    private int invasorsKilled = 0;
 
     private Timeline timeline;
 
@@ -67,16 +73,21 @@ public class GameController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         root.setFocusTraversable(true);
     
+        startGame();
+
+        Platform.runLater(() -> root.requestFocus());
+        root.setOnKeyPressed(this::keyChange);
+
+        root.requestFocus();
+    }
+
+    private void startGame() {
+        invasorsKilled = 0;
         createPlayer();
         generateInvasors(0);
         createBarriers();
 
         animation();
-    
-        Platform.runLater(() -> root.requestFocus());
-        root.setOnKeyPressed(this::keyChange);
-
-        root.requestFocus();
     }
     
     private void createBarriers() {
@@ -118,11 +129,29 @@ public class GameController implements Initializable {
     
         String info = won ? "Ganhou" : "Perdeu";
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Informação Importante");
-            alert.setHeaderText("Voce " + info + "!");
-            // alert.setContentText("um bosta");
-            alert.showAndWait();
+            alert.setHeaderText("Você " + info + "!");
+
+            ButtonType customButton = new ButtonType("Recomeçar", ButtonBar.ButtonData.OK_DONE);
+            ButtonType closeButton = new ButtonType("Sair", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            alert.getButtonTypes().setAll(customButton, closeButton);
+
+            alert.showAndWait().ifPresent(response -> {
+                if (response == customButton) {
+                    startGame();
+                } else {
+                    Alert secondAlert = new Alert(Alert.AlertType.INFORMATION);
+                    secondAlert.setTitle("Finalizando");
+                    secondAlert.setHeaderText("Obrigado por jogar");
+                    secondAlert.setContentText("O programa será encerrado.");
+                    secondAlert.showAndWait();
+
+                    Platform.exit(); // Fecha o programa
+                    System.exit(0); // Finaliza a aplicação
+                }
+            });
         });
     }
     
@@ -152,6 +181,10 @@ public class GameController implements Initializable {
         }
         if(reachedHeight) {
             endGame(false);
+            return;
+        }
+        if(invasorsKilled == totalEnemies) {
+            endGame(true);
             return;
         }
         if(reachedEdge){
@@ -237,7 +270,7 @@ public class GameController implements Initializable {
             bullet.print(root);
     
             // Define o espaço percorrido
-            double position = Constants.SCREEN_HEIGHT - initialHeight - player.getPosition().getX() - bulletArt.getWidth() - 2;
+            double position = totalY - (Constants.SCREEN_HEIGHT - player.getPosition().getY());
             // S = So + vt => t = (S - So) / v
             double time = (position * 190) / bullet.getSpeedY();
             // 180 é uma constante para não deixar nem muito lento, nem muito rápido
@@ -249,6 +282,39 @@ public class GameController implements Initializable {
             bulletTransition.setByY(-totalY + initialHeight); // Define até onde o tiro vai, sendo y=0 no topo da tela
             bulletTransition.setInterpolator(Interpolator.LINEAR); // Define velocidade constante
             bulletTransition.play();
+
+
+            // Colisao
+            final boolean[] isValidated = { false };
+
+            bulletTransition.currentTimeProperty().addListener(new ChangeListener<Duration>() {
+
+                @Override
+                public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+                    int i=0;
+                    for(List<Invasor> line : invasors) {
+                        for(Invasor invasor : line) {
+                            if (bulletArt.getBoundsInParent().intersects(invasor.getPixelArt().getBoundsInParent()) && !isValidated[0] && invasor.isAlive()) {
+                                isValidated[0] = true;
+
+                                player.shoot(invasor);
+                                
+                                // System.out.println("Colisão detectada!" + invasor.getClass() + " " + invasor.getPixelArt().getLayoutX() + " " + i);
+                                pointsLabel.setText("Pontos: "+player.getPoints());
+                                
+                                bulletTransition.stop();
+                                root.getChildren().remove(invasor.getPixelArt());
+                                root.getChildren().remove(bulletArt);
+                                bulletTransition.currentTimeProperty().removeListener(this);
+
+                                invasorsKilled++;
+                            }
+                            i++;
+                        }
+                    }
+                }
+            });
+
 
             bulletTransition.setOnFinished(removeEvent -> {
                 root.getChildren().remove(bulletArt);
