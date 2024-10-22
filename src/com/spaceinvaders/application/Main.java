@@ -1,5 +1,6 @@
 package com.spaceinvaders.application;
 
+import com.spaceinvaders.model.SoundPlayer;
 import com.spaceinvaders.utils.Constants;
 
 import javafx.application.Application;

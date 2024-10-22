@@ -18,6 +18,8 @@ public class Player extends Character{
 		setHits(hits);
 
 		sound = new SoundPlayer("src/sounds/sample.mp3");
+
+		System.out.println(sound);
 	}
 	public void changeSprintWhenDie(Pane root){
 		// fazer

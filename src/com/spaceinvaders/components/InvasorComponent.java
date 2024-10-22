@@ -13,4 +13,6 @@ public abstract class InvasorComponent extends ElementArt{
     //     return (Invasor)super.getCharacter();
     // }
 
+    // public abstract void changeState();
+
 }

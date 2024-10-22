@@ -66,8 +66,8 @@ public class GameController implements Initializable {
 
     // Variaveis
     private int level = 1;
-    private int bullet_speed = 30
-    ;
+    private int bullet_speed = 30;
+    private int timer_animation = 500;
     private short direction = 1; // true para direita, false para a esquerda 
     private int invasorsKilled = 0;
 
@@ -180,8 +180,25 @@ public class GameController implements Initializable {
         timeline.setCycleCount(Timeline.INDEFINITE); // Executa indefinidamente
         timeline.play(); // Inicia o movimento
     }
+
+    private int getAnimationDelay(int invasorsKilled){
+        if(invasorsKilled >= 0 && invasorsKilled <= 10) return 500;
+        // if(invasorsKilled > 10 && invasorsKilled <= 20) return 400;
+        // if(invasorsKilled > 20 && invasorsKilled <= 30) return 300;
+        // if(invasorsKilled > 30 && invasorsKilled <= 40) return 200;
+        // if(invasorsKilled > 40 && invasorsKilled <= 50) return 100;
+        return 5;
+    }
     
     private void moveAliens(List<List<Invasor>> invasors){
+        // int delay = getAnimationDelay(invasorsKilled);
+        // if(delay != timer_animation) {
+        //     timer_animation = delay;
+        //     timeline.stop();
+        //     animation();
+        //     return;
+        // }
+
         boolean reachedEdge = false;
         boolean reachedHeight = false;
         for(List<Invasor> line : invasors){

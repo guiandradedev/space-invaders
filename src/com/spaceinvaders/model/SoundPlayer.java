@@ -28,7 +28,7 @@ public class SoundPlayer {
             // Carrega o arquivo de som
             Media sound = new Media(new File(soundFilePath).toURI().toString());
             mediaPlayer = new MediaPlayer(sound);
-            mediaPlayer.play();
+            mediaPlayer.setOnReady(() -> mediaPlayer.play());
 
             mediaPlayer.setOnEndOfMedia(() -> {
                 System.out.println("Som terminou de tocar.");
