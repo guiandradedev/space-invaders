@@ -13,11 +13,15 @@ import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 
 public class Invasor extends Character{
+	private SoundPlayer soundExplode;
+	private SoundPlayer soundHit;
 
 	private final InvasorType type;
 	public Invasor(Position position, int lives, double speed_x, InvasorType type, InvasorComponent elementArt) {
 		super(position, lives, speed_x, elementArt);
 		this.type = type;
+		soundExplode= new SoundPlayer("src/sounds/explode.mp3");
+		soundHit= new SoundPlayer("src/sounds/hit.mp3");
 	}
 
 	public void move(double x, double y) {
@@ -25,6 +29,7 @@ public class Invasor extends Character{
 	}
 	public void shoot(Character invasor, Pane root) {}
 	public void takeDamage(Pane root) {
+		soundHit.playSound();
 		super.takeDamage(root); // remove uma vida
 	}
 	public InvasorType getType() {

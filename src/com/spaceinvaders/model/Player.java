@@ -9,12 +9,15 @@ public class Player extends Character{
 	private int points;
 	private int hits;
 	private boolean isShooting = false;
+	private SoundPlayer sound;
 
 	public Player(Position position, int lives, double speed_x, int points, int hits, PlayerArt art) {
 		super(position, lives, speed_x, art);
 		
 		setPoints(points);
 		setHits(hits);
+
+		sound = new SoundPlayer("src/sounds/sample.mp3");
 	}
 	public void changeSprintWhenDie(Pane root){
 		// fazer
@@ -23,7 +26,12 @@ public class Player extends Character{
 	public void move(double x, double y) {
 		this.getPosition().setPosition(x,y);
 	}
+
+	public void playSound(){
+		sound.playSound();
+	}
 	public void shoot(Character character, Pane root) {
+		System.out.println("atirou");
 		if(character instanceof Invasor) {
 			Invasor invasor = (Invasor) character; // Fazendo o casting
 
