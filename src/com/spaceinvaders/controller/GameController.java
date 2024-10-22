@@ -276,6 +276,7 @@ public class GameController implements Initializable {
         if(!player.isShooting()) {
             // Adiciona delay no tiro
             player.setIsShooting(true);
+            player.playSound();
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override

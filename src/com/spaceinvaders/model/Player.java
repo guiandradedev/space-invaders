@@ -26,8 +26,12 @@ public class Player extends Character{
 	public void move(double x, double y) {
 		this.getPosition().setPosition(x,y);
 	}
-	public void shoot(Character character, Pane root) {
+
+	public void playSound(){
 		sound.playSound();
+	}
+	public void shoot(Character character, Pane root) {
+		System.out.println("atirou");
 		if(character instanceof Invasor) {
 			Invasor invasor = (Invasor) character; // Fazendo o casting
 
