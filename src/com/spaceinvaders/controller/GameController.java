@@ -324,7 +324,7 @@ public class GameController implements Initializable {
                 player.getPixelArt().move(player, -player.getSpeedX(),0);
                 break;
                 
-            case ENTER:
+            case SPACE:
                 this.shoot();
                 break;           
             default:
