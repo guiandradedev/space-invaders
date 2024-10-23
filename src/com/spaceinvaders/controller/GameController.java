@@ -164,7 +164,7 @@ public class GameController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
                 // Verifica colisão com barreiras
-                barrierColision(bullet, bulletTransition,this);
+                barrierColision(bullet, bulletTransition,this, isValidated);
 
                 // Verifica colisao com player
                 Bounds bulletBound = bullet.getPixelArt().getBoundsInParent();
@@ -192,9 +192,8 @@ public class GameController implements Initializable {
                             int pixelY = (int) Math.floor(intersectY);
     
                             Color color = pixelReader.getColor(pixelX, pixelY);
-                            if(!color.equals(Color.TRANSPARENT)) {
+                            if(!color.equals(Color.TRANSPARENT) && !isValidated[0]) {
                                 isValidated[0] = true;
-
                                 killPlayer();
 
                                 bulletTransition.stop();
@@ -536,7 +535,7 @@ public class GameController implements Initializable {
                     }
             
                     // Verifica colisão com barreiras
-                    barrierColision(bullet, bulletTransition,this);
+                    barrierColision(bullet, bulletTransition,this, isValidated);
                 }
             };
             
@@ -551,7 +550,7 @@ public class GameController implements Initializable {
         }            
     }
 
-    private void barrierColision(Bullet bullet, TranslateTransition bulletTransition, ChangeListener<Duration> bulletListener) {
+    private void barrierColision(Bullet bullet, TranslateTransition bulletTransition, ChangeListener<Duration> bulletListener, boolean[] isValidated) {
         for(Barrier barrier : barriers) {
             Bounds bulletBound = bullet.getPixelArt().getBoundsInParent();
             Bounds barrierBound = barrier.getPixelArt().getBoundsInParent();
@@ -580,7 +579,7 @@ public class GameController implements Initializable {
                         Color color = pixelReader.getColor(pixelX, pixelY);
                         if(color.equals(Color.GREEN)) {
                             barrier.takeDamage(intersection);
-                            
+                            isValidated[0] = true;
                             bulletTransition.stop();
                             root.getChildren().remove(bullet.getPixelArt());
                             bulletTransition.currentTimeProperty().removeListener(bulletListener);
