@@ -159,6 +159,10 @@ public class GameController implements Initializable {
                             root.getChildren().remove(invasor.getPixelArt());
                         }
                     }
+
+                    for(Barrier barrier : barriers) {
+                        root.getChildren().remove(barrier.getPixelArt());
+                    }
                     
                     startGame();
                 } else {
@@ -242,6 +246,9 @@ public class GameController implements Initializable {
             for(List<Invasor> line : invasors){
                 for (Invasor invasor : line) {
                     if(invasor.isAlive()){
+                        if(invasor.getPixelArt().getState() != "Dead") {
+                            invasor.getPixelArt().changeState();
+                        }
                         invasor.getPixelArt().move(invasor, invasor.getSpeedX()*direction,0);
                     }
                 }

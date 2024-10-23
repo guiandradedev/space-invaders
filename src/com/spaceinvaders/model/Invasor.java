@@ -1,7 +1,7 @@
 package com.spaceinvaders.model;
 
 import com.spaceinvaders.components.InvasorComponent;
-import com.spaceinvaders.components.InvasorDeadArt;
+// import com.spaceinvaders.components.InvasorDeadArt;
 import com.spaceinvaders.components.PixelArt;
 import com.spaceinvaders.components.PlayerArt;
 import com.spaceinvaders.enums.InvasorType;
@@ -49,13 +49,13 @@ public class Invasor extends Character{
 
 	public void changeSprintWhenDie(Pane root) {
 		InvasorComponent invasorComponent = this.getPixelArt();
-		root.getChildren().remove(invasorComponent);
+		// root.getChildren().remove(invasorComponent);
 	
-		InvasorDeadArt invasorDeadArt = new InvasorDeadArt(
-			(int) invasorComponent.getWidth() / invasorComponent.getPixelSize(),
-			(int) invasorComponent.getHeight() / invasorComponent.getPixelSize(),
-			(int) invasorComponent.getPixelSize()
-		);
+		// InvasorDeadArt invasorDeadArt = new InvasorDeadArt(
+		// 	(int) invasorComponent.getWidth() / invasorComponent.getPixelSize(),
+		// 	(int) invasorComponent.getHeight() / invasorComponent.getPixelSize(),
+		// 	(int) invasorComponent.getPixelSize()
+		// );
 		
 		
 		this.setLives(1);
@@ -68,9 +68,10 @@ public class Invasor extends Character{
 		 *
 		 * */
 
+		this.getPixelArt().killInvasor();
 
-		setElementArt(invasorDeadArt);
-		print(root);
+		// setElementArt(invasorDeadArt);
+		// print(root);
 
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -78,7 +79,7 @@ public class Invasor extends Character{
 			public void run() {
 				Platform.runLater(() -> {
 					setLives(0);
-					root.getChildren().remove(invasorDeadArt);
+					root.getChildren().remove(invasorComponent);
 				});
 			}
 		}, 500);

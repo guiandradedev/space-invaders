@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 public class MidInvasor extends InvasorComponent{
     public MidInvasor(int width, int height, int pixelSize) {
         super(width, height, pixelSize);
+        setPixels(initialState());
         drawArt();
     }
 
@@ -16,8 +17,36 @@ public class MidInvasor extends InvasorComponent{
         GraphicsContext gc = getGraphicsContext2D();
         int pixelSize = this.getPixelSize();
 
-        // Exemplo simples de arte pixelada: um quadrado de 4x4 pixels
-        Color[][] pixels = {
+        for (int y = 0; y < getPixels().length; y++) {
+            for (int x = 0; x < getPixels()[y].length; x++) {
+                gc.setFill(getPixels()[y][x]);
+                gc.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+            }
+        }
+    }
+
+    public Color[][] movingState() {
+        return new Color[][] {
+            {Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE},
+            {Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE},
+            {Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE},
+            {Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE},
+            {Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE},
+            {Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE},
+            {Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE},
+            {Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE},
+            {Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
+            {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
+            {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
+            {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
+            {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
+            {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
+            {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
+        };
+    }
+
+    public Color[][] initialState(){
+        return new Color[][]{
             {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
             {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
             {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
@@ -34,12 +63,25 @@ public class MidInvasor extends InvasorComponent{
             {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
             {Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK},
         };
+    }
 
-        for (int y = 0; y < pixels.length; y++) {
-            for (int x = 0; x < pixels[y].length; x++) {
-                gc.setFill(pixels[y][x]);
-                gc.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
-            }
-        }
+    public Color[][] deadState() {
+        return new Color[][] {
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+            {Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW},
+        };
     }
 }
