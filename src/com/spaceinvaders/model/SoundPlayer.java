@@ -39,4 +39,5 @@ public class SoundPlayer {
             System.out.println("Erro ao carregar o arquivo de som!");
         }
     }
+
 }
