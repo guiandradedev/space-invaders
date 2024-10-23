@@ -167,15 +167,43 @@ public class GameController implements Initializable {
                 barrierColision(bullet, bulletTransition,this);
 
                 // Verifica colisao com player
-                if (bulletArt.getBoundsInParent().intersects(player.getPixelArt().getBoundsInParent()) && !isValidated[0]) {
-                    isValidated[0] = true;
+                Bounds bulletBound = bullet.getPixelArt().getBoundsInParent();
+                Bounds playerBound = player.getPixelArt().getBoundsInParent();
+                
+                if (bulletBound.intersects(playerBound)) {
+            
+                    // Encontra a intersecção da colisão
+                    Position min = new Position(Math.max(bulletBound.getMinX(), playerBound.getMinX()), Math.max(bulletBound.getMinY(), playerBound.getMinY()));
+                    Position max = new Position(Math.min(bulletBound.getMaxX(), playerBound.getMaxX()), Math.min(bulletBound.getMaxY(), playerBound.getMaxY()));
+                    Intersection intersection = new Intersection(min, max);
+    
+                    // Confirma que realmente existe intersecção
+                    if(intersection.hasIntersection()) {
+                        double intersectX = min.getX() - playerBound.getMinX();
+                        double intersectY = min.getY() - playerBound.getMinY();
+    
+                        // Transforma a imagem
+                        WritableImage snapshot = new WritableImage((int) player.getPixelArt().getWidth(), (int) player.getPixelArt().getHeight());
+                        player.getPixelArt().snapshot(null, snapshot);
+                        PixelReader pixelReader = snapshot.getPixelReader();
+    
+                        if (pixelReader != null) {
+                            int pixelX = (int) Math.floor(intersectX);
+                            int pixelY = (int) Math.floor(intersectY);
+    
+                            Color color = pixelReader.getColor(pixelX, pixelY);
+                            if(!color.equals(Color.TRANSPARENT)) {
+                                isValidated[0] = true;
 
-                    killPlayer();
+                                killPlayer();
 
-                    bulletTransition.stop();
-                    root.getChildren().remove(bulletArt);
+                                bulletTransition.stop();
+                                root.getChildren().remove(bulletArt);
 
-                    bulletTransition.currentTimeProperty().removeListener(this);
+                                bulletTransition.currentTimeProperty().removeListener(this);
+                            }
+                        }
+                    }
                 }
 
                 // Verifica colisao com balas do usuario
