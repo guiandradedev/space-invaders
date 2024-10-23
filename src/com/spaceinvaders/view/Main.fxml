@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spaceinvaders.controller.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="750.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spaceinvaders.controller.MainController">
    <children>
-      <Label layoutX="285.0" layoutY="53.0" text="Space Invasors" textFill="#00ff2b">
+      <Label fx:id="nameLabel" layoutX="285.0" layoutY="53.0" text="Space Invasors" textFill="#00ff2b">
          <font>
             <Font size="36.0" />
          </font>

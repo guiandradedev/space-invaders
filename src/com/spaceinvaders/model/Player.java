@@ -17,9 +17,7 @@ public class Player extends Character{
 		setPoints(points);
 		setHits(hits);
 
-		sound = new SoundPlayer("src/sounds/sample.mp3");
-
-		System.out.println(sound);
+		sound = new SoundPlayer("src/com/spaceinvaders/assets/sounds/sample.mp3");
 	}
 	public void changeSprintWhenDie(Pane root){
 		// fazer

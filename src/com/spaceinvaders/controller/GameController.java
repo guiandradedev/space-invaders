@@ -45,6 +45,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.scene.text.Font;
@@ -90,19 +91,11 @@ public class GameController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         root.setFocusTraversable(true);
 
-        File fontFile = new File("src/com/spaceinvaders/assets/fonts/PixeloidMono.ttf");
-
-        System.out.println(fontFile.exists());
-        System.out.println("aaa");
-
-        Font font = Font.loadFont(fontFile.toURI().toString(), 20);
-
-        // System.out.println(Constants.FONT_MONO);
-
-        hitsLabel.setFont(font);
-        // pointsLabel.setFont(Constants.FONT_SANS);
-        // timerLabel.setFont(Constants.FONT_SANS);
-        // nameLabel.setFont(Constants.FONT_MONO);
+        timerLabel.setFont(Constants.FONT_SANS);
+        pointsLabel.setFont(Constants.FONT_SANS);
+        hitsLabel.setFont(Constants.FONT_SANS);
+        nameLabel.setFont(Constants.FONT_MONO);
+        
     
         startGame();
 
@@ -154,7 +147,6 @@ public class GameController implements Initializable {
             }
             invasors.add(aux);
         }
-        System.out.println(totalEnemies);
     }
 
     
@@ -273,7 +265,6 @@ public class GameController implements Initializable {
             return;
         }
         if(invasorsKilled == totalEnemies) {
-            System.out.println(invasorsKilled + " - " + totalEnemies);
             endGame(true);
             return;
         }

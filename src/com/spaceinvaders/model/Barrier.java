@@ -9,7 +9,7 @@ public class Barrier extends Element{
 
     public Barrier(Position position, BarrierArt barrierArt) {
 		super(position, barrierArt);
-		sound = new SoundPlayer("/sounds/explode.mp3");
+		sound = new SoundPlayer("src/com/spaceinvaders/assets/sounds/explode.mp3");
 	}
 
 	@Override

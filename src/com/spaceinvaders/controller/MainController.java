@@ -3,16 +3,21 @@ package com.spaceinvaders.controller;
 import java.io.IOException;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
 
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import com.spaceinvaders.utils.Constants;
+
 import java.io.File;
 
 public class MainController implements Initializable{
@@ -20,18 +25,12 @@ public class MainController implements Initializable{
     private Scene scene;
     private Parent root;
 
+    @FXML
+    private Label nameLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // File fontFile = new File("src/com/spaceinvaders/assets/fonts/PixeloidMono.ttf");
-
-        // System.out.println(fontFile.exists());
-        // System.out.println("aaa");
-
-        // Font font = Font.loadFont(fontFile.toURI().toString(), 20);
-
-        // Font font = Font.loadFont(getClass().getResourceAsStream("PixeloidMono.ttf"), 20);
-        // System.out.println(font);
+        nameLabel.setFont(Constants.FONT_MONO);
     }
 
     public void openGame(ActionEvent event) throws IOException{

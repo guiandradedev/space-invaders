@@ -20,8 +20,8 @@ public class Invasor extends Character{
 	public Invasor(Position position, int lives, double speed_x, InvasorType type, InvasorComponent elementArt) {
 		super(position, lives, speed_x, elementArt);
 		this.type = type;
-		soundExplode= new SoundPlayer("src/sounds/explode.mp3");
-		soundHit= new SoundPlayer("src/sounds/hit.mp3");
+		soundExplode= new SoundPlayer("src/com/spaceinvaders/assets/sounds/explode.mp3");
+		soundHit= new SoundPlayer("src/com/spaceinvaders/assets/sounds/hit.mp3");
 	}
 
 	public void move(double x, double y) {
