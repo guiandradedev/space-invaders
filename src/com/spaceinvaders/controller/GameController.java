@@ -1,9 +1,9 @@
 package com.spaceinvaders.controller;
 
 import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import com.spaceinvaders.components.BarrierArt;
 import com.spaceinvaders.components.BulletArt;
@@ -44,8 +44,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+import javafx.scene.text.Font;
 
 public class GameController implements Initializable {
     @FXML
@@ -54,6 +56,10 @@ public class GameController implements Initializable {
     private Label hitsLabel;
     @FXML
     private Label pointsLabel;
+    @FXML
+    private Label timerLabel;
+    @FXML
+    private Label nameLabel;
 
     // Constantes
     private final int totalX = Constants.SCREEN_WIDTH - 2*Constants.LIMIT_SCREEN_WIDTH;
@@ -66,12 +72,14 @@ public class GameController implements Initializable {
 
     // Variaveis
     private int level = 1;
-    private int bullet_speed = 30;
+    private int bullet_speed = 200;
     private int timer_animation = 500;
     private short direction = 1; // true para direita, false para a esquerda 
     private int invasorsKilled = 0;
+    private int seconds = 0;
 
     private Timeline timeline;
+    private Timeline stopwatch;
 
     // Personagens
     private Player player;
@@ -81,6 +89,20 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         root.setFocusTraversable(true);
+
+        File fontFile = new File("src/com/spaceinvaders/assets/fonts/PixeloidMono.ttf");
+
+        System.out.println(fontFile.exists());
+        System.out.println("aaa");
+
+        Font font = Font.loadFont(fontFile.toURI().toString(), 20);
+
+        // System.out.println(Constants.FONT_MONO);
+
+        hitsLabel.setFont(font);
+        // pointsLabel.setFont(Constants.FONT_SANS);
+        // timerLabel.setFont(Constants.FONT_SANS);
+        // nameLabel.setFont(Constants.FONT_MONO);
     
         startGame();
 
@@ -99,6 +121,8 @@ public class GameController implements Initializable {
         createPlayer();
         generateInvasors(0);
         createBarriers();
+
+        timer();
 
         animation();
     }
@@ -130,6 +154,7 @@ public class GameController implements Initializable {
             }
             invasors.add(aux);
         }
+        System.out.println(totalEnemies);
     }
 
     
@@ -178,30 +203,49 @@ public class GameController implements Initializable {
             });
         });
     }
+
+    private void timer() {
+        stopwatch = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateTimer(timerLabel)));
+        stopwatch.setCycleCount(Timeline.INDEFINITE); 
+        stopwatch.play(
+
+        );
+    }
+    private void updateTimer(Label timerLabel) {
+        seconds++;
+        int minutes = seconds / 60;
+        int remainingSeconds = seconds % 60;
+        timerLabel.setText(String.format("%02d:%02d", minutes, remainingSeconds));
+    }
     
     private void animation() {
-        timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> moveAliens(invasors)));
+        timeline = new Timeline(new KeyFrame(Duration.millis(timer_animation), e -> moveAliens(invasors)));
         timeline.setCycleCount(Timeline.INDEFINITE); // Executa indefinidamente
         timeline.play(); // Inicia o movimento
     }
 
-    private int getAnimationDelay(int invasorsKilled){
-        if(invasorsKilled >= 0 && invasorsKilled <= 10) return 500;
-        // if(invasorsKilled > 10 && invasorsKilled <= 20) return 400;
-        // if(invasorsKilled > 20 && invasorsKilled <= 30) return 300;
-        // if(invasorsKilled > 30 && invasorsKilled <= 40) return 200;
-        // if(invasorsKilled > 40 && invasorsKilled <= 50) return 100;
-        return 5;
+    private int getAnimationDelay(int invasorsKilled) {
+        if (invasorsKilled >= 0 && invasorsKilled <= 5) return 500; // P1
+        if (invasorsKilled > 5 && invasorsKilled <= 10) return 425; // P2
+        if (invasorsKilled > 10 && invasorsKilled <= 15) return 360; // P3
+        if (invasorsKilled > 15 && invasorsKilled <= 20) return 250; // P4
+        if (invasorsKilled > 20 && invasorsKilled <= 25) return 155;  // P5
+        if (invasorsKilled > 25 && invasorsKilled <= 30) return 80;  // P6
+        if (invasorsKilled > 30 && invasorsKilled <= 35) return 45;  // P7
+        if (invasorsKilled > 35 && invasorsKilled <= 40) return 30;  // P8
+        if (invasorsKilled > 40 && invasorsKilled <= 45) return 20;  // P9
+        if (invasorsKilled > 45 && invasorsKilled <= 50) return 15;  // P9
+        return 5; // Pmin
     }
     
     private void moveAliens(List<List<Invasor>> invasors){
-        // int delay = getAnimationDelay(invasorsKilled);
-        // if(delay != timer_animation) {
-        //     timer_animation = delay;
-        //     timeline.stop();
-        //     animation();
-        //     return;
-        // }
+        int delay = getAnimationDelay(invasorsKilled);
+        if(delay != timer_animation) {
+            timer_animation = delay;
+            timeline.stop();
+            animation();
+            return;
+        }
 
         boolean reachedEdge = false;
         boolean reachedHeight = false;
@@ -229,6 +273,7 @@ public class GameController implements Initializable {
             return;
         }
         if(invasorsKilled == totalEnemies) {
+            System.out.println(invasorsKilled + " - " + totalEnemies);
             endGame(true);
             return;
         }
@@ -344,7 +389,7 @@ public class GameController implements Initializable {
                     int i=0;
                     for(List<Invasor> line : invasors) {
                         for(Invasor invasor : line) {
-                            if (bulletArt.getBoundsInParent().intersects(invasor.getPixelArt().getBoundsInParent()) && !isValidated[0] && invasor.isAlive()) {
+                            if (bulletArt.getBoundsInParent().intersects(invasor.getPixelArt().getBoundsInParent()) && !isValidated[0] && invasor.isAlive() && invasor.getPixelArt().getState() != "Dead") {
                                 isValidated[0] = true;
 
                                 // System.out.println("Bala "+ bulletArt.getBoundsInParent());

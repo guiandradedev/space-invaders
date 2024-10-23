@@ -2,6 +2,7 @@ package com.spaceinvaders.application;
 
 import com.spaceinvaders.model.SoundPlayer;
 import com.spaceinvaders.utils.Constants;
+import javafx.scene.text.Font;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +19,7 @@ public class Main extends Application {
             Scene scene = new Scene(root);
 
             stage.setTitle(Constants.GAME_TITLE);
-            Image icon = new Image(getClass().getResourceAsStream("/com/spaceinvaders/image/icon.png"));
+            Image icon = new Image(getClass().getResourceAsStream("/com/spaceinvaders/assets/image/icon.png"));
             stage.getIcons().add(icon);
 
             stage.setResizable(false);

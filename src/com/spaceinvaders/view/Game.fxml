@@ -8,9 +8,14 @@
 
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="750.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.spaceinvaders.controller.GameController">
    <children>
-      <Label layoutX="239.0" layoutY="54.0" text="Space Invaders - Jogo" textFill="#00ff2b">
+      <Label fx:id="nameLabel" layoutX="239.0" layoutY="54.0" text="Space Invaders - Jogo" textFill="#00ff2b">
          <font>
             <Font size="36.0" />
+         </font>
+      </Label>
+      <Label fx:id="timerLabel" layoutX="100.0" layoutY="30.0" text="00:00" textFill="#00ff2b">
+         <font>
+            <Font size="14.0" />
          </font>
       </Label>
       <Label fx:id="hitsLabel" layoutX="500.0" layoutY="30.0" text="Tiros: 0" textFill="#00ff2b">
