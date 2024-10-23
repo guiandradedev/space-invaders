@@ -17,6 +17,7 @@ import com.spaceinvaders.model.Intersection;
 import com.spaceinvaders.model.Invasor;
 import com.spaceinvaders.model.Player;
 import com.spaceinvaders.model.Position;
+import com.spaceinvaders.model.SoundPlayer;
 import com.spaceinvaders.utils.Constants;
 
 import javafx.animation.AnimationTimer;
@@ -86,7 +87,8 @@ public class GameController implements Initializable {
     private Timeline timeline;
     private Timeline stopwatch;
 
-    private Set<KeyCode> keyqueue= new HashSet<>();
+    private final Set<KeyCode> keyqueue= new HashSet<>();
+    private final SoundPlayer gameSong = new SoundPlayer("src/com/spaceinvaders/assets/sounds/song_game.mp3",0.5);
 
     // Personagens
     private Player player;
@@ -128,6 +130,7 @@ public class GameController implements Initializable {
     }
 
     private void startGame() {
+        gameSong.playRepeat();
         invasorsKilled = 0;
         hitsLabel.setText("Tiros: 0");
         pointsLabel.setText("Pontos: 0");
@@ -173,6 +176,7 @@ public class GameController implements Initializable {
 
     
     private void endGame(boolean won) {
+        gameSong.stop();
         if (timeline != null) {
             timeline.stop();
         }
