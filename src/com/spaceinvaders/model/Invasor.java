@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 public class Invasor extends Character{
 	private SoundPlayer soundExplode;
 	private SoundPlayer soundHit;
+	private SoundPlayer soundShoot;
 
 	private final InvasorType type;
 	public Invasor(Position position, int lives, double speed_x, InvasorType type, InvasorComponent elementArt) {
@@ -22,12 +23,26 @@ public class Invasor extends Character{
 		this.type = type;
 		soundExplode= new SoundPlayer("src/com/spaceinvaders/assets/sounds/explode.mp3");
 		soundHit= new SoundPlayer("src/com/spaceinvaders/assets/sounds/hit.mp3");
+		soundShoot = new SoundPlayer("src/com/spaceinvaders/assets/sounds/sample.mp3");
 	}
 
 	public void move(double x, double y) {
 		this.getPosition().setPosition(x,y);
 	}
-	public void shoot(Character invasor, Pane root) {}
+	public void playSound(){
+		soundShoot.playSound();
+	}
+	public void shoot(Element element, Pane root) {
+		if(element instanceof Barrier) {
+
+		} else if(element instanceof Player) {
+
+		} else if(element instanceof Bullet) {
+
+		} else {
+			throw new IllegalArgumentException("Parametro inválido");
+		}
+	}
 	public void takeDamage(Pane root) {
 		soundHit.playSound();
 		super.takeDamage(root); // remove uma vida
@@ -43,8 +58,8 @@ public class Invasor extends Character{
 	public void animation(int delay) {
 		
 	}
-	public boolean isAlive() {
-		return this.getLives() != 0;
+	public void hit(){
+		playSound();
 	}
 
 	public void changeSprintWhenDie(Pane root) {

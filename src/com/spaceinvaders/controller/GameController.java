@@ -88,6 +88,7 @@ public class GameController implements Initializable {
     private Player player;
     private List<List<Invasor>> invasors = new ArrayList<>();
     private List<Barrier> barriers = new ArrayList<>();
+    private List<HearthArt> hearts = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -97,7 +98,6 @@ public class GameController implements Initializable {
         pointsLabel.setFont(Constants.FONT_SANS);
         hitsLabel.setFont(Constants.FONT_SANS);
         nameLabel.setFont(Constants.FONT_MONO);
-        
         
         startGame();
 
@@ -121,7 +121,6 @@ public class GameController implements Initializable {
 
         animation();
         randomInvasorShootAnimation();
-
     }
 
     private void randomInvasorShootAnimation(){
@@ -141,13 +140,15 @@ public class GameController implements Initializable {
 
         Invasor invasor = lastElements[randomInRange];
 
+        // faz barulho de tiro
+        invasor.hit();
+
         BulletArt bulletArt = new BulletArt(1, 4, Constants.PIXEL_SIZE);
         Bullet bullet = new Bullet(new Position(invasor.getPosition().getX(), invasor.getPosition().getY()), bullet_speed, bulletArt);
         bullet.print(root, invasor);
 
         double position = player.getPixelArt().getLayoutY() - bulletArt.getLayoutY();
         double time = (position * 250) / bullet.getSpeedY();
-        System.out.println(position + " " + time);
 
         TranslateTransition bulletTransition = new TranslateTransition();
         bulletTransition.setNode(bulletArt);
@@ -157,8 +158,37 @@ public class GameController implements Initializable {
         bulletTransition.setInterpolator(Interpolator.LINEAR);
         bulletTransition.play();
 
+        final boolean[] isValidated = { false };
+
+        ChangeListener<Duration> bulletListener = new ChangeListener<>() {
+            @Override
+            public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+                // Verifica colisão com barreiras
+                barrierColision(bullet, bulletTransition,this);
+
+                // Verifica colisao com player
+                if (bulletArt.getBoundsInParent().intersects(player.getPixelArt().getBoundsInParent()) && !isValidated[0]) {
+                    isValidated[0] = true;
+
+                    killPlayer();
+
+                    bulletTransition.stop();
+                    root.getChildren().remove(bulletArt);
+
+                    bulletTransition.currentTimeProperty().removeListener(this);
+                }
+
+                // Verifica colisao com balas do usuario
+            }
+        };
+        
+        bulletTransition.currentTimeProperty().addListener(bulletListener);
+        
         bulletTransition.setOnFinished(removeEvent -> {
-            root.getChildren().remove(bulletArt);
+            if (root.getChildren().contains(bulletArt)) {
+                root.getChildren().remove(bulletArt);
+            }            
+            bulletTransition.currentTimeProperty().removeListener(bulletListener);
         });
 
     }
@@ -203,13 +233,20 @@ public class GameController implements Initializable {
             }
         }
     }
-
     
     private void endGame(boolean won) {
         if (timeline != null) {
             timeline.stop();
         }
         
+        if(stopwatch != null) {
+            stopwatch.stop();
+        }
+
+        if(invasorShoot != null) {
+            invasorShoot.stop();
+        }
+
         String info = won ? "Ganhou" : "Perdeu";
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -249,6 +286,24 @@ public class GameController implements Initializable {
                 }
             });
         });
+    }
+
+    private void killPlayer() {
+        int i = hearts.size() - 1;
+        HearthArt hearthArt = hearts.getLast();
+        while(!hearthArt.getActive() && i >= 0) {
+            i--;
+            hearthArt = hearts.get(i);
+        }
+        if(!hearthArt.getActive()) {
+            endGame(false);
+        }
+        hearthArt.changeActive();
+        player.takeDamage(root);
+
+        if(!player.isAlive()) {
+            endGame(false);
+        }
     }
 
     private void timer() {
@@ -363,6 +418,7 @@ public class GameController implements Initializable {
         for(int i=0; i<player.getLives(); i++) {
             HearthArt hearthArt = new HearthArt(10, 8, Constants.PIXEL_SIZE, true);
             hearthArt.print(new Position((i*hearthArt.getWidth()*1.4) + Constants.LIMIT_SCREEN_WIDTH, Constants.SCREEN_HEIGHT - Constants.LIMIT_SCREEN_HEIGHT - 20), root);
+            hearts.add(hearthArt);
         }
     }
 
@@ -389,7 +445,6 @@ public class GameController implements Initializable {
         if(!player.isShooting()) {
             // Adiciona delay no tiro
             player.setIsShooting(true);
-            player.playSound();
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
@@ -425,84 +480,86 @@ public class GameController implements Initializable {
             // Colisao
             final boolean[] isValidated = { false };
 
-            bulletTransition.currentTimeProperty().addListener(new ChangeListener<Duration>() {
-
+            ChangeListener<Duration> bulletListener = new ChangeListener<>() {
                 @Override
                 public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
-                   // Verifica colisao com inimigos
-                    int i=0;
-                    for(List<Invasor> line : invasors) {
-                        for(Invasor invasor : line) {
-                            if (bulletArt.getBoundsInParent().intersects(invasor.getPixelArt().getBoundsInParent()) && !isValidated[0] && invasor.isAlive() && invasor.getPixelArt().getState() != "Dead") {
+                    // Verifica colisão com inimigos
+                    int i = 0;
+                    for (List<Invasor> line : invasors) {
+                        for (Invasor invasor : line) {
+                            if (bulletArt.getBoundsInParent().intersects(invasor.getPixelArt().getBoundsInParent()) 
+                                    && !isValidated[0] && invasor.isAlive() 
+                                    && invasor.getPixelArt().getState() != "Dead") {
                                 isValidated[0] = true;
-
-                                // System.out.println("Bala "+ bulletArt.getBoundsInParent());
-                                // System.out.println("Invasor "+invasor.getPixelArt().getBoundsInParent());
-
+            
                                 player.shoot(invasor, root);
-                                
-                                // System.out.println("Colisão detectada!" + invasor.getClass() + " " + invasor.getPixelArt().getLayoutX() + " " + i);
-                                pointsLabel.setText("Pontos: "+player.getPoints());
-                                
+                                pointsLabel.setText("Pontos: " + player.getPoints());
+            
                                 bulletTransition.stop();
                                 root.getChildren().remove(bulletArt);
+            
+                                // Remove o listener após a colisão
                                 bulletTransition.currentTimeProperty().removeListener(this);
-
+            
                                 invasorsKilled++;
                             }
                             i++;
                         }
                     }
+            
+                    // Verifica colisão com barreiras
+                    barrierColision(bullet, bulletTransition,this);
+                }
+            };
+            
+            bulletTransition.currentTimeProperty().addListener(bulletListener);
+            
+            bulletTransition.setOnFinished(removeEvent -> {
+                if (root.getChildren().contains(bulletArt)) {
+                    root.getChildren().remove(bulletArt);
+                }            
+                bulletTransition.currentTimeProperty().removeListener(bulletListener);
+            });
+        }            
+    }
 
-                    // Verifica colisao com barreiras
-                    for(Barrier barrier : barriers) {
-                        Bounds bulletBound = bulletArt.getBoundsInParent();
-                        Bounds barrierBound = barrier.getPixelArt().getBoundsInParent();
-                        
-                        if (bulletBound.intersects(barrierBound)) {
-                    
-                            // Encontra a intersecção da colisão
-                            Position min = new Position(Math.max(bulletBound.getMinX(), barrierBound.getMinX()), Math.max(bulletBound.getMinY(), barrierBound.getMinY()));
-                            Position max = new Position(Math.min(bulletBound.getMaxX(), barrierBound.getMaxX()), Math.min(bulletBound.getMaxY(), barrierBound.getMaxY()));
-                            Intersection intersection = new Intersection(min, max);
+    private void barrierColision(Bullet bullet, TranslateTransition bulletTransition, ChangeListener<Duration> bulletListener) {
+        for(Barrier barrier : barriers) {
+            Bounds bulletBound = bullet.getPixelArt().getBoundsInParent();
+            Bounds barrierBound = barrier.getPixelArt().getBoundsInParent();
+            
+            if (bulletBound.intersects(barrierBound)) {
+        
+                // Encontra a intersecção da colisão
+                Position min = new Position(Math.max(bulletBound.getMinX(), barrierBound.getMinX()), Math.max(bulletBound.getMinY(), barrierBound.getMinY()));
+                Position max = new Position(Math.min(bulletBound.getMaxX(), barrierBound.getMaxX()), Math.min(bulletBound.getMaxY(), barrierBound.getMaxY()));
+                Intersection intersection = new Intersection(min, max);
 
-                            // Confirma que realmente existe intersecção
-                            if(intersection.hasIntersection()) {
-                                double intersectX = min.getX() - barrierBound.getMinX();
-                                double intersectY = min.getY() - barrierBound.getMinY();
+                // Confirma que realmente existe intersecção
+                if(intersection.hasIntersection()) {
+                    double intersectX = min.getX() - barrierBound.getMinX();
+                    double intersectY = min.getY() - barrierBound.getMinY();
 
-                                // Transforma a imagem
-                                WritableImage snapshot = new WritableImage((int) barrier.getPixelArt().getWidth(), (int) barrier.getPixelArt().getHeight());
-                                barrier.getPixelArt().snapshot(null, snapshot);
-                                PixelReader pixelReader = snapshot.getPixelReader();
+                    // Transforma a imagem
+                    WritableImage snapshot = new WritableImage((int) barrier.getPixelArt().getWidth(), (int) barrier.getPixelArt().getHeight());
+                    barrier.getPixelArt().snapshot(null, snapshot);
+                    PixelReader pixelReader = snapshot.getPixelReader();
 
-                                if (pixelReader != null) {
-                                    int pixelX = (int) Math.floor(intersectX);
-                                    int pixelY = (int) Math.floor(intersectY);
+                    if (pixelReader != null) {
+                        int pixelX = (int) Math.floor(intersectX);
+                        int pixelY = (int) Math.floor(intersectY);
 
-                                    Color color = pixelReader.getColor(pixelX, pixelY);
-                                    if(color.equals(Color.GREEN)) {
-                                        barrier.takeDamage(intersection);
-                                        
-                                        bulletTransition.stop();
-                                        root.getChildren().remove(bulletArt);
-                                        bulletTransition.currentTimeProperty().removeListener(this);
-                                    }
-                                }
-                            }
+                        Color color = pixelReader.getColor(pixelX, pixelY);
+                        if(color.equals(Color.GREEN)) {
+                            barrier.takeDamage(intersection);
+                            
+                            bulletTransition.stop();
+                            root.getChildren().remove(bullet.getPixelArt());
+                            bulletTransition.currentTimeProperty().removeListener(bulletListener);
                         }
                     }
                 }
-            });
-
-
-            bulletTransition.setOnFinished(removeEvent -> {
-                root.getChildren().remove(bulletArt);
-            });
+            }
         }
-    }
-
-    private void barrierColision() {
-        
     }
 }

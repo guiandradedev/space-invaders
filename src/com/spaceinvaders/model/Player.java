@@ -30,7 +30,7 @@ public class Player extends Character{
 	public void playSound(){
 		sound.playSound();
 	}
-	public void shoot(Character character, Pane root) {
+	public void shoot(Element character, Pane root) {
 		System.out.println("atirou");
 		if(character instanceof Invasor) {
 			Invasor invasor = (Invasor) character; // Fazendo o casting
@@ -42,7 +42,9 @@ public class Player extends Character{
 		}
 
 	}
-	public void takeDamage() {}
+	public void takeDamage() {
+		this.setLives(getLives() - 1);
+	}
 
 	public int getPoints() {
 		return points;
@@ -71,6 +73,7 @@ public class Player extends Character{
 		setHits(this.getHits() + hits);
 	}
 	public void addHit() {
+		playSound();
 		setHits(this.getHits() + 1);
 	}
 	

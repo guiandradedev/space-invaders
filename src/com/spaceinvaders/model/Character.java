@@ -16,7 +16,7 @@ public abstract class Character extends Element{
 	}
 	
 	public abstract void move(double x, double y);
-	public abstract void shoot(Character invasor, Pane root);
+	public abstract void shoot(Element invasor, Pane root);
 	public abstract void changeSprintWhenDie(Pane root);
 	public void takeDamage(Pane root) {
 		this.setLives(lives - 1);
@@ -42,5 +42,7 @@ public abstract class Character extends Element{
 	public void setSpeedX(double speed_x) {
 		this.speed_x = speed_x;
 	}
-
+	public boolean isAlive() {
+		return this.getLives() != 0;
+	}
 }
