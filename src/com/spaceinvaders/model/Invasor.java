@@ -84,5 +84,10 @@ public class Invasor extends Character{
 			}
 		}, 500);
 	}
+
+	@Override
+	public String toString() {
+		return this.getType().name() + " - " + this.getPosition().getX() + "/" + this.getPosition().getY();
+	}
 	
 }

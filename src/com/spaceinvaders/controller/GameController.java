@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.spaceinvaders.components.BarrierArt;
 import com.spaceinvaders.components.BulletArt;
@@ -79,6 +80,7 @@ public class GameController implements Initializable {
     private int invasorsKilled = 0;
     private int seconds = 0;
 
+    private Timeline invasorShoot;
     private Timeline timeline;
     private Timeline stopwatch;
 
@@ -96,7 +98,7 @@ public class GameController implements Initializable {
         hitsLabel.setFont(Constants.FONT_SANS);
         nameLabel.setFont(Constants.FONT_MONO);
         
-    
+        
         startGame();
 
         Platform.runLater(() -> root.requestFocus());
@@ -118,6 +120,59 @@ public class GameController implements Initializable {
         timer();
 
         animation();
+        randomInvasorShootAnimation();
+
+    }
+
+    private void randomInvasorShootAnimation(){
+        invasorShoot = new Timeline(new KeyFrame(Duration.seconds(1.5), e -> randomInvasorShoot()));
+        invasorShoot.setCycleCount(Timeline.INDEFINITE); 
+        invasorShoot.play();
+    }
+    private void randomInvasorShoot(){
+        Invasor[] lastElements = getLastRowAlives();
+
+        Random random = new Random();
+        int randomInRange = random.nextInt(lastElements.length);
+
+        while(lastElements[randomInRange] == null) {
+            randomInRange = random.nextInt(lastElements.length + 1);
+        }
+
+        Invasor invasor = lastElements[randomInRange];
+
+        BulletArt bulletArt = new BulletArt(1, 4, Constants.PIXEL_SIZE);
+        Bullet bullet = new Bullet(new Position(invasor.getPosition().getX(), invasor.getPosition().getY()), bullet_speed, bulletArt);
+        bullet.print(root, invasor);
+
+        double position = player.getPixelArt().getLayoutY() - bulletArt.getLayoutY();
+        double time = (position * 250) / bullet.getSpeedY();
+        System.out.println(position + " " + time);
+
+        TranslateTransition bulletTransition = new TranslateTransition();
+        bulletTransition.setNode(bulletArt);
+        bulletTransition.setDuration(Duration.millis(time));
+        bulletTransition.setCycleCount(1);
+        bulletTransition.setByY(position);
+        bulletTransition.setInterpolator(Interpolator.LINEAR);
+        bulletTransition.play();
+
+        bulletTransition.setOnFinished(removeEvent -> {
+            root.getChildren().remove(bulletArt);
+        });
+
+    }
+
+    private Invasor[] getLastRowAlives() {
+        Invasor[] lastElements = new Invasor[totalEnemiesInLine];
+        for(int i=invasors.size() - 1; i>=0; i--) {
+            for(int j=0; j < invasors.get(i).size(); j++) {
+                if(lastElements[j] == null && invasors.get(i).get(j).isAlive()) {
+                    lastElements[j] = invasors.get(i).get(j);
+                }
+            }
+        }
+        return lastElements;
     }
     
     private void createBarriers() {
@@ -136,16 +191,16 @@ public class GameController implements Initializable {
         invasors = new ArrayList<>();
         totalEnemies = 0;
         for (InvasorType type : InvasorType.values()) {
-            aux = new ArrayList<>();
             for(int i=0; i<type.getLines(); i++) {
+                aux = new ArrayList<>();
                 for(int j=0; j<totalEnemiesInLine; j++) {
                     Invasor invasor = createInvasor(type, j, baseHeight, baseSpeed);
                     aux.add(invasor);
                 }
                 totalEnemies += totalEnemiesInLine;
                 baseHeight += (2*Constants.INVASOR_HEIGHT) + 30;
+                invasors.add(aux);
             }
-            invasors.add(aux);
         }
     }
 
@@ -180,7 +235,7 @@ public class GameController implements Initializable {
                     for(Barrier barrier : barriers) {
                         root.getChildren().remove(barrier.getPixelArt());
                     }
-                    
+                    seconds = 0;
                     startGame();
                 } else {
                     Alert secondAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -199,9 +254,7 @@ public class GameController implements Initializable {
     private void timer() {
         stopwatch = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateTimer(timerLabel)));
         stopwatch.setCycleCount(Timeline.INDEFINITE); 
-        stopwatch.play(
-
-        );
+        stopwatch.play();
     }
     private void updateTimer(Label timerLabel) {
         seconds++;
@@ -352,7 +405,7 @@ public class GameController implements Initializable {
             // Gera a arte do tiro
             BulletArt bulletArt = new BulletArt(1, 4, Constants.PIXEL_SIZE);
             Bullet bullet = new Bullet(new Position(player.getPosition().getX(), player.getPosition().getY()), bullet_speed, bulletArt);
-            bullet.print(root);
+            bullet.print(root, player);
     
             // Define o espaço percorrido
             double position = totalY - (Constants.SCREEN_HEIGHT - player.getPosition().getY());
@@ -447,5 +500,9 @@ public class GameController implements Initializable {
                 root.getChildren().remove(bulletArt);
             });
         }
+    }
+
+    private void barrierColision() {
+        
     }
 }

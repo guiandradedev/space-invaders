@@ -2,6 +2,7 @@ package com.spaceinvaders.components;
 
 import com.spaceinvaders.model.Bullet;
 import com.spaceinvaders.model.Element;
+import com.spaceinvaders.model.Player;
 import com.spaceinvaders.model.Position;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -17,11 +18,19 @@ public class BulletArt extends MovableArt {
     public void printArt(Position position) {
         this.drawArt();
 
-        position.setY(position.getY() - this.getHeight() - 2);
-        position.setX(position.getX() + (this.getPixelSize() * this.getWidth())/2 + 11);
-
         this.setLayoutX(position.getX());
         this.setLayoutY(position.getY());
+    }
+
+    public void printArt(Position position, Element element) {
+        if(element instanceof Player) {
+            position.setY(position.getY() - this.getHeight() - 2);
+            position.setX(position.getX() + (this.getPixelSize() * this.getWidth())/2 + 11);
+        } else {
+            position.setY(position.getY() + 2 + element.getPixelArt().getHeight());
+            position.setX(position.getX() + (element.getPixelArt().getWidth())/2 - (this.getPixelSize() * this.getWidth())/2 + 3);
+        }
+        printArt(position);
     }
 
     public void drawArt() {
