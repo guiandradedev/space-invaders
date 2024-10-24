@@ -18,8 +18,10 @@ import com.spaceinvaders.model.Intersection;
 import com.spaceinvaders.model.Invasor;
 import com.spaceinvaders.model.Player;
 import com.spaceinvaders.model.Position;
+import com.spaceinvaders.model.SoundPlayer;
 import com.spaceinvaders.utils.Constants;
 
+import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -40,10 +42,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import java.util.Set;
+import java.util.HashSet;
 
 import java.io.File;
 import java.io.InputStream;
@@ -84,6 +89,9 @@ public class GameController implements Initializable {
     private Timeline timeline;
     private Timeline stopwatch;
 
+    private final Set<KeyCode> keyqueue= new HashSet<>();
+    private final SoundPlayer gameSong = new SoundPlayer("src/com/spaceinvaders/assets/sounds/song_game.mp3",0.5);
+
     // Personagens
     private Player player;
     private List<List<Invasor>> invasors = new ArrayList<>();
@@ -102,12 +110,29 @@ public class GameController implements Initializable {
         startGame();
 
         Platform.runLater(() -> root.requestFocus());
-        root.setOnKeyPressed(this::keyChange);
 
+        root.setOnKeyPressed(event ->{
+            keyqueue.add(event.getCode());
+        });
+
+        root.setOnKeyReleased(event -> {
+            keyqueue.remove(event.getCode());
+        });
+
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                keyChange(); 
+            }
+        };
+
+        timer.start();
+        
         root.requestFocus();
     }
 
     private void startGame() {
+        gameSong.playRepeat();
         invasorsKilled = 0;
         hitsLabel.setText("Tiros: 0");
         pointsLabel.setText("Pontos: 0");
@@ -262,6 +287,7 @@ public class GameController implements Initializable {
     }
     
     private void endGame(boolean won) {
+        gameSong.stop();
         if (timeline != null) {
             timeline.stop();
         }
@@ -438,7 +464,7 @@ public class GameController implements Initializable {
     private void createPlayer() {
         // Gera o player
         PlayerArt playerArt = new PlayerArt(Constants.PLAYER_WIDTH, Constants.PLAYER_HEIGHT, Constants.PIXEL_SIZE); 
-        player = new Player(new Position(Constants.LIMIT_SCREEN_WIDTH + 20, totalY + Constants.LIMIT_SCREEN_HEIGHT - playerArt.getHeight() - 50), 3, 7, 0, 0, playerArt);
+        player = new Player(new Position(Constants.LIMIT_SCREEN_WIDTH + 20, totalY + Constants.LIMIT_SCREEN_HEIGHT - playerArt.getHeight() - 50), 3, 1.3, 0, 0, playerArt);
         player.print(root);
 
         // Gera a arte das vidas
@@ -449,22 +475,17 @@ public class GameController implements Initializable {
         }
     }
 
-    private void keyChange(KeyEvent event){
-        event.consume();
-        switch (event.getCode()) {
-            case RIGHT:
-                player.getPixelArt().move(player, player.getSpeedX(),0);
-                break;
+    private void keyChange(){
+        if (keyqueue.contains(KeyCode.RIGHT)) {
+            player.getPixelArt().move(player, player.getSpeedX(), 0);
+        }
 
-            case LEFT:
-                player.getPixelArt().move(player, -player.getSpeedX(),0);
-                break;
-                
-            case SPACE:
-                this.shoot();
-                break;           
-            default:
-                break;
+        if (keyqueue.contains(KeyCode.LEFT)) {
+            player.getPixelArt().move(player, -player.getSpeedX(), 0);
+        }
+
+        if (keyqueue.contains(KeyCode.SPACE)) {
+            shoot(); // Disparar tiro
         }
     }    
 

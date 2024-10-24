@@ -30,8 +30,8 @@ public class Player extends Character{
 	public void playSound(){
 		sound.playSound();
 	}
+
 	public void shoot(Element character, Pane root) {
-		System.out.println("atirou");
 		if(character instanceof Invasor) {
 			Invasor invasor = (Invasor) character; // Fazendo o casting
 
