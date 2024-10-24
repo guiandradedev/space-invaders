@@ -42,4 +42,13 @@ public class HearthArt extends StaticArt{
             }
         }
     }
+
+    public void changeActive() {
+        this.active = !this.active;
+        drawArt();
+    }
+
+    public boolean getActive(){
+        return this.active;
+    }
 }

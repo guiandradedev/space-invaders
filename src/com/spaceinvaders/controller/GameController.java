@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.spaceinvaders.components.BarrierArt;
 import com.spaceinvaders.components.BulletArt;
@@ -84,6 +85,7 @@ public class GameController implements Initializable {
     private int invasorsKilled = 0;
     private int seconds = 0;
 
+    private Timeline invasorShoot;
     private Timeline timeline;
     private Timeline stopwatch;
 
@@ -94,6 +96,7 @@ public class GameController implements Initializable {
     private Player player;
     private List<List<Invasor>> invasors = new ArrayList<>();
     private List<Barrier> barriers = new ArrayList<>();
+    private List<HearthArt> hearts = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -104,7 +107,6 @@ public class GameController implements Initializable {
         hitsLabel.setFont(Constants.FONT_SANS);
         nameLabel.setFont(Constants.FONT_MONO);
         
-    
         startGame();
 
         Platform.runLater(() -> root.requestFocus());
@@ -143,6 +145,116 @@ public class GameController implements Initializable {
         timer();
 
         animation();
+        randomInvasorShootAnimation();
+    }
+
+    private void randomInvasorShootAnimation(){
+        invasorShoot = new Timeline(new KeyFrame(Duration.seconds(1.5), e -> randomInvasorShoot()));
+        invasorShoot.setCycleCount(Timeline.INDEFINITE); 
+        invasorShoot.play();
+    }
+    private void randomInvasorShoot(){
+        Invasor[] lastElements = getLastRowAlives();
+
+        Random random = new Random();
+        int randomInRange = random.nextInt(lastElements.length);
+
+        while(lastElements[randomInRange] == null) {
+            randomInRange = random.nextInt(lastElements.length + 1);
+        }
+
+        Invasor invasor = lastElements[randomInRange];
+
+        // faz barulho de tiro
+        invasor.hit();
+
+        BulletArt bulletArt = new BulletArt(1, 4, Constants.PIXEL_SIZE);
+        Bullet bullet = new Bullet(new Position(invasor.getPosition().getX(), invasor.getPosition().getY()), bullet_speed, bulletArt);
+        bullet.print(root, invasor);
+
+        double position = player.getPixelArt().getLayoutY() - bulletArt.getLayoutY();
+        double time = (position * 250) / bullet.getSpeedY();
+
+        TranslateTransition bulletTransition = new TranslateTransition();
+        bulletTransition.setNode(bulletArt);
+        bulletTransition.setDuration(Duration.millis(time));
+        bulletTransition.setCycleCount(1);
+        bulletTransition.setByY(position);
+        bulletTransition.setInterpolator(Interpolator.LINEAR);
+        bulletTransition.play();
+
+        final boolean[] isValidated = { false };
+
+        ChangeListener<Duration> bulletListener = new ChangeListener<>() {
+            @Override
+            public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+                // Verifica colisão com barreiras
+                barrierColision(bullet, bulletTransition,this, isValidated);
+
+                // Verifica colisao com player
+                Bounds bulletBound = bullet.getPixelArt().getBoundsInParent();
+                Bounds playerBound = player.getPixelArt().getBoundsInParent();
+                
+                if (bulletBound.intersects(playerBound)) {
+            
+                    // Encontra a intersecção da colisão
+                    Position min = new Position(Math.max(bulletBound.getMinX(), playerBound.getMinX()), Math.max(bulletBound.getMinY(), playerBound.getMinY()));
+                    Position max = new Position(Math.min(bulletBound.getMaxX(), playerBound.getMaxX()), Math.min(bulletBound.getMaxY(), playerBound.getMaxY()));
+                    Intersection intersection = new Intersection(min, max);
+    
+                    // Confirma que realmente existe intersecção
+                    if(intersection.hasIntersection()) {
+                        double intersectX = min.getX() - playerBound.getMinX();
+                        double intersectY = min.getY() - playerBound.getMinY();
+    
+                        // Transforma a imagem
+                        WritableImage snapshot = new WritableImage((int) player.getPixelArt().getWidth(), (int) player.getPixelArt().getHeight());
+                        player.getPixelArt().snapshot(null, snapshot);
+                        PixelReader pixelReader = snapshot.getPixelReader();
+    
+                        if (pixelReader != null) {
+                            int pixelX = (int) Math.floor(intersectX);
+                            int pixelY = (int) Math.floor(intersectY);
+    
+                            Color color = pixelReader.getColor(pixelX, pixelY);
+                            if(!color.equals(Color.TRANSPARENT) && !isValidated[0]) {
+                                isValidated[0] = true;
+                                killPlayer();
+
+                                bulletTransition.stop();
+                                root.getChildren().remove(bulletArt);
+
+                                bulletTransition.currentTimeProperty().removeListener(this);
+                            }
+                        }
+                    }
+                }
+
+                // Verifica colisao com balas do usuario
+            }
+        };
+        
+        bulletTransition.currentTimeProperty().addListener(bulletListener);
+        
+        bulletTransition.setOnFinished(removeEvent -> {
+            if (root.getChildren().contains(bulletArt)) {
+                root.getChildren().remove(bulletArt);
+            }            
+            bulletTransition.currentTimeProperty().removeListener(bulletListener);
+        });
+
+    }
+
+    private Invasor[] getLastRowAlives() {
+        Invasor[] lastElements = new Invasor[totalEnemiesInLine];
+        for(int i=invasors.size() - 1; i>=0; i--) {
+            for(int j=0; j < invasors.get(i).size(); j++) {
+                if(lastElements[j] == null && invasors.get(i).get(j).isAlive()) {
+                    lastElements[j] = invasors.get(i).get(j);
+                }
+            }
+        }
+        return lastElements;
     }
     
     private void createBarriers() {
@@ -161,19 +273,18 @@ public class GameController implements Initializable {
         invasors = new ArrayList<>();
         totalEnemies = 0;
         for (InvasorType type : InvasorType.values()) {
-            aux = new ArrayList<>();
             for(int i=0; i<type.getLines(); i++) {
+                aux = new ArrayList<>();
                 for(int j=0; j<totalEnemiesInLine; j++) {
                     Invasor invasor = createInvasor(type, j, baseHeight, baseSpeed);
                     aux.add(invasor);
                 }
                 totalEnemies += totalEnemiesInLine;
                 baseHeight += (2*Constants.INVASOR_HEIGHT) + 30;
+                invasors.add(aux);
             }
-            invasors.add(aux);
         }
     }
-
     
     private void endGame(boolean won) {
         gameSong.stop();
@@ -181,6 +292,14 @@ public class GameController implements Initializable {
             timeline.stop();
         }
         
+        if(stopwatch != null) {
+            stopwatch.stop();
+        }
+
+        if(invasorShoot != null) {
+            invasorShoot.stop();
+        }
+
         String info = won ? "Ganhou" : "Perdeu";
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -206,7 +325,7 @@ public class GameController implements Initializable {
                     for(Barrier barrier : barriers) {
                         root.getChildren().remove(barrier.getPixelArt());
                     }
-                    
+                    seconds = 0;
                     startGame();
                 } else {
                     Alert secondAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -222,12 +341,28 @@ public class GameController implements Initializable {
         });
     }
 
+    private void killPlayer() {
+        int i = hearts.size() - 1;
+        HearthArt hearthArt = hearts.getLast();
+        while(!hearthArt.getActive() && i >= 0) {
+            i--;
+            hearthArt = hearts.get(i);
+        }
+        if(!hearthArt.getActive()) {
+            endGame(false);
+        }
+        hearthArt.changeActive();
+        player.takeDamage(root);
+
+        if(!player.isAlive()) {
+            endGame(false);
+        }
+    }
+
     private void timer() {
         stopwatch = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateTimer(timerLabel)));
         stopwatch.setCycleCount(Timeline.INDEFINITE); 
-        stopwatch.play(
-
-        );
+        stopwatch.play();
     }
     private void updateTimer(Label timerLabel) {
         seconds++;
@@ -336,6 +471,7 @@ public class GameController implements Initializable {
         for(int i=0; i<player.getLives(); i++) {
             HearthArt hearthArt = new HearthArt(10, 8, Constants.PIXEL_SIZE, true);
             hearthArt.print(new Position((i*hearthArt.getWidth()*1.4) + Constants.LIMIT_SCREEN_WIDTH, Constants.SCREEN_HEIGHT - Constants.LIMIT_SCREEN_HEIGHT - 20), root);
+            hearts.add(hearthArt);
         }
     }
 
@@ -357,7 +493,6 @@ public class GameController implements Initializable {
         if(!player.isShooting()) {
             // Adiciona delay no tiro
             player.setIsShooting(true);
-            player.playSound();
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
@@ -373,7 +508,7 @@ public class GameController implements Initializable {
             // Gera a arte do tiro
             BulletArt bulletArt = new BulletArt(1, 4, Constants.PIXEL_SIZE);
             Bullet bullet = new Bullet(new Position(player.getPosition().getX(), player.getPosition().getY()), bullet_speed, bulletArt);
-            bullet.print(root);
+            bullet.print(root, player);
     
             // Define o espaço percorrido
             double position = totalY - (Constants.SCREEN_HEIGHT - player.getPosition().getY());
@@ -393,80 +528,86 @@ public class GameController implements Initializable {
             // Colisao
             final boolean[] isValidated = { false };
 
-            bulletTransition.currentTimeProperty().addListener(new ChangeListener<Duration>() {
-
+            ChangeListener<Duration> bulletListener = new ChangeListener<>() {
                 @Override
                 public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
-                   // Verifica colisao com inimigos
-                    int i=0;
-                    for(List<Invasor> line : invasors) {
-                        for(Invasor invasor : line) {
-                            if (bulletArt.getBoundsInParent().intersects(invasor.getPixelArt().getBoundsInParent()) && !isValidated[0] && invasor.isAlive() && invasor.getPixelArt().getState() != "Dead") {
+                    // Verifica colisão com inimigos
+                    int i = 0;
+                    for (List<Invasor> line : invasors) {
+                        for (Invasor invasor : line) {
+                            if (bulletArt.getBoundsInParent().intersects(invasor.getPixelArt().getBoundsInParent()) 
+                                    && !isValidated[0] && invasor.isAlive() 
+                                    && invasor.getPixelArt().getState() != "Dead") {
                                 isValidated[0] = true;
-
-                                // System.out.println("Bala "+ bulletArt.getBoundsInParent());
-                                // System.out.println("Invasor "+invasor.getPixelArt().getBoundsInParent());
-
+            
                                 player.shoot(invasor, root);
-                                
-                                // System.out.println("Colisão detectada!" + invasor.getClass() + " " + invasor.getPixelArt().getLayoutX() + " " + i);
-                                pointsLabel.setText("Pontos: "+player.getPoints());
-                                
+                                pointsLabel.setText("Pontos: " + player.getPoints());
+            
                                 bulletTransition.stop();
                                 root.getChildren().remove(bulletArt);
+            
+                                // Remove o listener após a colisão
                                 bulletTransition.currentTimeProperty().removeListener(this);
-
+            
                                 invasorsKilled++;
                             }
                             i++;
                         }
                     }
+            
+                    // Verifica colisão com barreiras
+                    barrierColision(bullet, bulletTransition,this, isValidated);
+                }
+            };
+            
+            bulletTransition.currentTimeProperty().addListener(bulletListener);
+            
+            bulletTransition.setOnFinished(removeEvent -> {
+                if (root.getChildren().contains(bulletArt)) {
+                    root.getChildren().remove(bulletArt);
+                }            
+                bulletTransition.currentTimeProperty().removeListener(bulletListener);
+            });
+        }            
+    }
 
-                    // Verifica colisao com barreiras
-                    for(Barrier barrier : barriers) {
-                        Bounds bulletBound = bulletArt.getBoundsInParent();
-                        Bounds barrierBound = barrier.getPixelArt().getBoundsInParent();
-                        
-                        if (bulletBound.intersects(barrierBound)) {
-                    
-                            // Encontra a intersecção da colisão
-                            Position min = new Position(Math.max(bulletBound.getMinX(), barrierBound.getMinX()), Math.max(bulletBound.getMinY(), barrierBound.getMinY()));
-                            Position max = new Position(Math.min(bulletBound.getMaxX(), barrierBound.getMaxX()), Math.min(bulletBound.getMaxY(), barrierBound.getMaxY()));
-                            Intersection intersection = new Intersection(min, max);
+    private void barrierColision(Bullet bullet, TranslateTransition bulletTransition, ChangeListener<Duration> bulletListener, boolean[] isValidated) {
+        for(Barrier barrier : barriers) {
+            Bounds bulletBound = bullet.getPixelArt().getBoundsInParent();
+            Bounds barrierBound = barrier.getPixelArt().getBoundsInParent();
+            
+            if (bulletBound.intersects(barrierBound)) {
+        
+                // Encontra a intersecção da colisão
+                Position min = new Position(Math.max(bulletBound.getMinX(), barrierBound.getMinX()), Math.max(bulletBound.getMinY(), barrierBound.getMinY()));
+                Position max = new Position(Math.min(bulletBound.getMaxX(), barrierBound.getMaxX()), Math.min(bulletBound.getMaxY(), barrierBound.getMaxY()));
+                Intersection intersection = new Intersection(min, max);
 
-                            // Confirma que realmente existe intersecção
-                            if(intersection.hasIntersection()) {
-                                double intersectX = min.getX() - barrierBound.getMinX();
-                                double intersectY = min.getY() - barrierBound.getMinY();
+                // Confirma que realmente existe intersecção
+                if(intersection.hasIntersection()) {
+                    double intersectX = min.getX() - barrierBound.getMinX();
+                    double intersectY = min.getY() - barrierBound.getMinY();
 
-                                // Transforma a imagem
-                                WritableImage snapshot = new WritableImage((int) barrier.getPixelArt().getWidth(), (int) barrier.getPixelArt().getHeight());
-                                barrier.getPixelArt().snapshot(null, snapshot);
-                                PixelReader pixelReader = snapshot.getPixelReader();
+                    // Transforma a imagem
+                    WritableImage snapshot = new WritableImage((int) barrier.getPixelArt().getWidth(), (int) barrier.getPixelArt().getHeight());
+                    barrier.getPixelArt().snapshot(null, snapshot);
+                    PixelReader pixelReader = snapshot.getPixelReader();
 
-                                if (pixelReader != null) {
-                                    int pixelX = (int) Math.floor(intersectX);
-                                    int pixelY = (int) Math.floor(intersectY);
+                    if (pixelReader != null) {
+                        int pixelX = (int) Math.floor(intersectX);
+                        int pixelY = (int) Math.floor(intersectY);
 
-                                    Color color = pixelReader.getColor(pixelX, pixelY);
-                                    if(color.equals(Color.GREEN)) {
-                                        barrier.takeDamage(intersection);
-                                        
-                                        bulletTransition.stop();
-                                        root.getChildren().remove(bulletArt);
-                                        bulletTransition.currentTimeProperty().removeListener(this);
-                                    }
-                                }
-                            }
+                        Color color = pixelReader.getColor(pixelX, pixelY);
+                        if(color.equals(Color.GREEN)) {
+                            barrier.takeDamage(intersection);
+                            isValidated[0] = true;
+                            bulletTransition.stop();
+                            root.getChildren().remove(bullet.getPixelArt());
+                            bulletTransition.currentTimeProperty().removeListener(bulletListener);
                         }
                     }
                 }
-            });
-
-
-            bulletTransition.setOnFinished(removeEvent -> {
-                root.getChildren().remove(bulletArt);
-            });
+            }
         }
     }
 }
