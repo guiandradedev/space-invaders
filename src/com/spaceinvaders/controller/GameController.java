@@ -263,7 +263,7 @@ public class GameController implements Initializable {
         for(int i=0; i<4; i++) {
             BarrierArt barrierArt = new BarrierArt(Constants.BARRIER_WIDTH, Constants.BARRIER_HEIGHT, Constants.PIXEL_SIZE);
             Barrier barrier = new Barrier(new Position((i * 50 * 3.5) + Constants.LIMIT_SCREEN_WIDTH + 50, endHeight), barrierArt);
-            barrier.print(root);;
+            barrier.print(root);
             barriers.add(barrier);
         }
     }
@@ -465,7 +465,7 @@ public class GameController implements Initializable {
     private void createPlayer() {
         // Gera o player
         PlayerArt playerArt = new PlayerArt(Constants.PLAYER_WIDTH, Constants.PLAYER_HEIGHT, Constants.PIXEL_SIZE); 
-        player = new Player(new Position(Constants.LIMIT_SCREEN_WIDTH + 20, totalY + Constants.LIMIT_SCREEN_HEIGHT - playerArt.getHeight() - 50), 3, 1.3, 0, 0, playerArt);
+        player = new Player(new Position(Constants.LIMIT_SCREEN_WIDTH + 20, totalY + Constants.LIMIT_SCREEN_HEIGHT - playerArt.getHeight() - 50), 3, 1.7, 0, 0, playerArt);
         player.print(root);
 
         // Gera a arte das vidas
