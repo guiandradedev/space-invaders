@@ -90,7 +90,7 @@ public class GameController implements Initializable {
     private Timeline stopwatch;
 
     private final Set<KeyCode> keyqueue= new HashSet<>();
-    private final SoundPlayer gameSong = new SoundPlayer("src/com/spaceinvaders/assets/sounds/song_game.mp3",0.5);
+    private final SoundPlayer gameSong = new SoundPlayer("src/com/spaceinvaders/assets/sounds/song_game.mp3",0.3);
 
     // Personagens
     private Player player;
@@ -153,6 +153,7 @@ public class GameController implements Initializable {
         invasorShoot.setCycleCount(Timeline.INDEFINITE); 
         invasorShoot.play();
     }
+
     private void randomInvasorShoot(){
         Invasor[] lastElements = getLastRowAlives();
 
@@ -160,7 +161,7 @@ public class GameController implements Initializable {
         int randomInRange = random.nextInt(lastElements.length);
 
         while(lastElements[randomInRange] == null) {
-            randomInRange = random.nextInt(lastElements.length + 1);
+            randomInRange = random.nextInt(lastElements.length);
         }
 
         Invasor invasor = lastElements[randomInRange];
