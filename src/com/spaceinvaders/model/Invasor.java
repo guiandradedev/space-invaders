@@ -102,7 +102,7 @@ public class Invasor extends Character{
 					root.getChildren().remove(invasorComponent);
 				});
 			}
-		}, 500);
+		}, 250);
 	}
 
 	@Override
