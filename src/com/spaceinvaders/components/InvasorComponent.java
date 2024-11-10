@@ -28,13 +28,14 @@ public abstract class InvasorComponent extends ElementArt{
     }
 
     public void changeState(){
-        if(state == "Initial") {
+        if(state.equals("Initial")) {
             pixels = movingState();
             state = "Moving";
         } else {
             state = "Initial";
             pixels = initialState();
         }
+        System.out.println(getPixels());
         drawArt();
     }
 

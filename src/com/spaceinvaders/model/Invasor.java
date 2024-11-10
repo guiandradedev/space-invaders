@@ -55,7 +55,12 @@ public class Invasor extends Character{
 		return (InvasorComponent)super.getPixelArt();
 	}
 
-	public void animation(int delay) {
+	public void animation() {
+		InvasorComponent invasorComponent = this.getPixelArt();
+
+		if(!invasorComponent.getState().equals("Dead")) {
+			invasorComponent.changeState();
+		}
 		
 	}
 	public void hit(){

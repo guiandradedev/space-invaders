@@ -15,7 +15,7 @@ public class Constants {
     public static final int PLAYER_WIDTH = 15; // em px
     public static final int PLAYER_HEIGHT = 15;
     public static final int INVASOR_WIDTH = 15; // em px
-    public static final int INVASOR_HEIGHT = 15;
+    public static final int INVASOR_HEIGHT = 12;
     public static final int BARRIER_HEIGHT = 24;
     public static final int BARRIER_WIDTH = 24;
     public static final int PIXEL_SIZE = 3;

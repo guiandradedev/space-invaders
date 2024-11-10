@@ -48,6 +48,10 @@ public class HearthArt extends StaticArt{
         drawArt();
     }
 
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public boolean getActive(){
         return this.active;
     }
