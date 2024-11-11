@@ -8,7 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
 
@@ -27,10 +30,16 @@ public class MainController implements Initializable{
 
     @FXML
     private Label nameLabel;
+    @FXML
+    private Button btnJogar;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        nameLabel.setFont(Constants.FONT_MONO);
+        Font font = Font.loadFont(Constants.class.getResourceAsStream("/com/spaceinvaders/assets/fonts/PixeloidMono.ttf"), 40);
+        nameLabel.setFont(font);
+        nameLabel.setText(Constants.GAME_TITLE);
+        
+        btnJogar.setFont(Constants.FONT_MONO);
     }
 
     public void openGame(ActionEvent event) throws IOException{
