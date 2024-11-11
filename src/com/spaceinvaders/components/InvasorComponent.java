@@ -28,13 +28,14 @@ public abstract class InvasorComponent extends ElementArt{
     }
 
     public void changeState(){
-        if(state == "Initial") {
+        if(state.equals("Initial")) {
             pixels = movingState();
             state = "Moving";
         } else {
             state = "Initial";
             pixels = initialState();
         }
+        System.out.println(getPixels());
         drawArt();
     }
 
@@ -46,5 +47,22 @@ public abstract class InvasorComponent extends ElementArt{
 
     public abstract Color[][] initialState();
     public abstract Color[][] movingState();
-    public abstract Color[][] deadState();
+    public Color[][] deadState() {
+    Color black = Color.BLACK;
+    Color white = Color.WHITE;
+
+        return new Color[][] {
+            {black, black, black, white, black, black, white, white, white, black, black, white, black, black, black},
+            {black, white, black, black, white, black, black, white, black, black, white, black, black, white, black},
+            {black, white, black, black, black, white, black, black, black, white, black, black, black, white, black},
+            {black, black, white, black, black, black, black, black, black, black, black, black, white, black, black},
+            {black, black, black, white, black, black, black, black, black, black, black, white, black, black, black},
+            {white, white, black, black, black, black, black, black, black, black, black, black, black, white, white},
+            {black, black, black, white, black, black, black, black, black, black, black, white, black, black, black},
+            {black, black, white, black, black, white, black, black, black, white, black, black, white, black, black},
+            {black, white, black, black, white, black, black, white, black, black, white, black, black, white, black},
+            {black, white, black, white, black, black, white, white, white, black, black, white, black, white, black},
+            {black, black, black, black, black, black, black, black, black, black, black, black, black, black, black},
+        };
+    }
 }

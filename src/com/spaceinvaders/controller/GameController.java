@@ -326,6 +326,9 @@ public class GameController implements Initializable {
                     for(Barrier barrier : barriers) {
                         root.getChildren().remove(barrier.getPixelArt());
                     }
+                    for(HearthArt hearthArt : hearts) {
+                        hearthArt.setActive(true);
+                    }
                     seconds = 0;
                     startGame();
                 } else {
@@ -444,9 +447,7 @@ public class GameController implements Initializable {
             for(List<Invasor> line : invasors){
                 for (Invasor invasor : line) {
                     if(invasor.isAlive()){
-                        if(invasor.getPixelArt().getState() != "Dead") {
-                            invasor.getPixelArt().changeState();
-                        }
+                        invasor.animation();
                         invasor.getPixelArt().move(invasor, invasor.getSpeedX()*direction,0);
                     }
                 }
