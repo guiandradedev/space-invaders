@@ -35,7 +35,6 @@ public abstract class InvasorComponent extends ElementArt{
             state = "Initial";
             pixels = initialState();
         }
-        System.out.println(getPixels());
         drawArt();
     }
 

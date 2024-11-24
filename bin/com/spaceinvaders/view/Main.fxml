@@ -14,12 +14,12 @@
             <Image url="@../assets/image/background.jpg" />
          </image>
       </ImageView>
-      <Button fx:id="btnJogar" layoutX="316.0" layoutY="400.0" mnemonicParsing="false" onAction="#openGame" style="-fx-background-color: black; -fx-border-color: white; -fx-border-radius: 2;" text="Jogar" textFill="#00ff0d">
+      <Button fx:id="btnJogar" layoutX="316.0" layoutY="695.0" mnemonicParsing="false" onAction="#openGame" style="-fx-background-color: black; -fx-border-color: white; -fx-border-radius: 2;" text="Jogar" textFill="#00ff0d">
          <font>
             <Font size="24.0" />
          </font>
       </Button>
-      <Label fx:id="nameLabel" layoutX="200.0" layoutY="330.0" textFill="#00ff2b">
+      <Label fx:id="nameLabel" layoutX="200.0" layoutY="232.0" textFill="#00ff2b">
          <font>
             <Font size="48.0" />
          </font>

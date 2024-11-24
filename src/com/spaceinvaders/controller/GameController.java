@@ -86,6 +86,7 @@ public class GameController implements Initializable {
     private int seconds = 0;
 
     private Timeline invasorShoot;
+    private Timeline specificInvasorShoot;
     private Timeline timeline;
     private Timeline stopwatch;
 
@@ -94,6 +95,7 @@ public class GameController implements Initializable {
 
     // Personagens
     private Player player;
+    private Player second_player;
     private List<List<Invasor>> invasors = new ArrayList<>();
     private List<Barrier> barriers = new ArrayList<>();
     private List<HearthArt> hearts = new ArrayList<>();
@@ -149,9 +151,42 @@ public class GameController implements Initializable {
     }
 
     private void randomInvasorShootAnimation(){
+        // Tiros aleatorios
         invasorShoot = new Timeline(new KeyFrame(Duration.seconds(1.5), e -> randomInvasorShoot()));
         invasorShoot.setCycleCount(Timeline.INDEFINITE); 
         invasorShoot.play();
+
+        // Tiros do que tiver em cima
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                specificInvasorShoot = new Timeline(new KeyFrame(Duration.seconds(1.5), e -> specificInvasorShootAnimation()));
+                specificInvasorShoot.setCycleCount(Timeline.INDEFINITE); 
+                specificInvasorShoot.play();
+            }
+        }, delay / 2);
+    }
+
+    private void specificInvasorShootAnimation() {
+        Invasor[] lastElements = getLastRowAlives();
+
+        Invasor invasor_aligned = null;
+        Bounds playerBound = player.getPixelArt().getBoundsInParent();
+        for(Invasor invasor : lastElements) {
+            if(invasor != null) {
+                Bounds invasorBound = invasor.getPixelArt().getBoundsInParent();
+                if(invasorBound.getMaxX() > playerBound.getMinX() && invasorBound.getMinX() < playerBound.getMaxX()){
+                    invasor_aligned = invasor;
+                }
+            }
+        }
+
+        if(invasor_aligned == null) {
+            return;
+        }
+
+        invasorShoot(invasor_aligned);
     }
 
     private void randomInvasorShoot(){
@@ -165,7 +200,10 @@ public class GameController implements Initializable {
         }
 
         Invasor invasor = lastElements[randomInRange];
+        invasorShoot(invasor);
+    }
 
+    private void invasorShoot(Invasor invasor) {
         // faz barulho de tiro
         invasor.hit();
 
@@ -202,21 +240,21 @@ public class GameController implements Initializable {
                     Position min = new Position(Math.max(bulletBound.getMinX(), playerBound.getMinX()), Math.max(bulletBound.getMinY(), playerBound.getMinY()));
                     Position max = new Position(Math.min(bulletBound.getMaxX(), playerBound.getMaxX()), Math.min(bulletBound.getMaxY(), playerBound.getMaxY()));
                     Intersection intersection = new Intersection(min, max);
-    
+
                     // Confirma que realmente existe intersecção
                     if(intersection.hasIntersection()) {
                         double intersectX = min.getX() - playerBound.getMinX();
                         double intersectY = min.getY() - playerBound.getMinY();
-    
+
                         // Transforma a imagem
                         WritableImage snapshot = new WritableImage((int) player.getPixelArt().getWidth(), (int) player.getPixelArt().getHeight());
                         player.getPixelArt().snapshot(null, snapshot);
                         PixelReader pixelReader = snapshot.getPixelReader();
-    
+
                         if (pixelReader != null) {
                             int pixelX = (int) Math.floor(intersectX);
                             int pixelY = (int) Math.floor(intersectY);
-    
+
                             Color color = pixelReader.getColor(pixelX, pixelY);
                             if(!color.equals(Color.TRANSPARENT) && !isValidated[0]) {
                                 isValidated[0] = true;
@@ -234,16 +272,15 @@ public class GameController implements Initializable {
                 // Verifica colisao com balas do usuario
             }
         };
-        
+
         bulletTransition.currentTimeProperty().addListener(bulletListener);
-        
+
         bulletTransition.setOnFinished(removeEvent -> {
             if (root.getChildren().contains(bulletArt)) {
                 root.getChildren().remove(bulletArt);
             }            
             bulletTransition.currentTimeProperty().removeListener(bulletListener);
         });
-
     }
 
     private Invasor[] getLastRowAlives() {
@@ -310,6 +347,11 @@ public class GameController implements Initializable {
             
             ButtonType customButton = new ButtonType("Recomeçar", ButtonBar.ButtonData.OK_DONE);
             ButtonType closeButton = new ButtonType("Sair", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            invasorShoot.stop();
+            specificInvasorShoot.stop();
+            timeline.stop();
+            stopwatch.stop();
             
             alert.getButtonTypes().setAll(customButton, closeButton);
             
@@ -349,8 +391,8 @@ public class GameController implements Initializable {
         int i = hearts.size() - 1;
         HearthArt hearthArt = hearts.getLast();
         while(!hearthArt.getActive() && i >= 0) {
-            i--;
             hearthArt = hearts.get(i);
+            i--;
         }
         if(!hearthArt.getActive()) {
             endGame(false);
