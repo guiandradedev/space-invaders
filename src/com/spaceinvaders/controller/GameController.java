@@ -31,30 +31,22 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import java.util.Set;
 import java.util.HashSet;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
-import javafx.scene.text.Font;
 
 public class GameController implements Initializable {
     @FXML
@@ -165,7 +157,7 @@ public class GameController implements Initializable {
                 specificInvasorShoot.setCycleCount(Timeline.INDEFINITE); 
                 specificInvasorShoot.play();
             }
-        }, delay / 2);
+        }, delay);
     }
 
     private void specificInvasorShootAnimation() {
@@ -356,21 +348,22 @@ public class GameController implements Initializable {
             alert.getButtonTypes().setAll(customButton, closeButton);
             
             alert.showAndWait().ifPresent(response -> {
-                if (response == customButton) {
-                    root.getChildren().remove(player.getPixelArt());
+                root.getChildren().remove(player.getPixelArt());
                     
-                    for(List<Invasor> line : invasors) {
-                        for(Invasor invasor : line) {
-                            root.getChildren().remove(invasor.getPixelArt());
-                        }
+                for(List<Invasor> line : invasors) {
+                    for(Invasor invasor : line) {
+                        root.getChildren().remove(invasor.getPixelArt());
                     }
+                }
 
-                    for(Barrier barrier : barriers) {
-                        root.getChildren().remove(barrier.getPixelArt());
-                    }
-                    for(HearthArt hearthArt : hearts) {
-                        hearthArt.setActive(true);
-                    }
+                for(Barrier barrier : barriers) {
+                    root.getChildren().remove(barrier.getPixelArt());
+                }
+                for(HearthArt hearthArt : hearts) {
+                    hearthArt.setActive(true);
+                }
+                
+                if (response == customButton) {
                     seconds = 0;
                     startGame();
                 } else {
