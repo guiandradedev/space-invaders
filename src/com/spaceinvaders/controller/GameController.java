@@ -71,7 +71,7 @@ public class GameController implements Initializable {
 
     // Variaveis
     private int level = 1;
-    private int bullet_speed = 200;
+    private int bullet_speed = 170;
     private int timer_animation = 500;
     private short direction = 1; // true para direita, false para a esquerda 
     private int invasorsKilled = 0;
@@ -501,7 +501,7 @@ public class GameController implements Initializable {
     private void createPlayer() {
         // Gera o player
         PlayerArt playerArt = new PlayerArt(Constants.PLAYER_WIDTH, Constants.PLAYER_HEIGHT, Constants.PIXEL_SIZE); 
-        player = new Player(new Position(Constants.LIMIT_SCREEN_WIDTH + 20, totalY + Constants.LIMIT_SCREEN_HEIGHT - playerArt.getHeight() - 50), 3, 1.7, 0, 0, playerArt);
+        player = new Player(new Position(Constants.LIMIT_SCREEN_WIDTH + 20, totalY + Constants.LIMIT_SCREEN_HEIGHT - playerArt.getHeight() - 50), 3, 2.3, 0, 0, playerArt);
         player.print(root);
 
         // Gera a arte das vidas
