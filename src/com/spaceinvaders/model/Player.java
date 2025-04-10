@@ -1,0 +1,84 @@
+package com.spaceinvaders.model;
+
+import com.spaceinvaders.components.PixelArt;
+import com.spaceinvaders.components.PlayerArt;
+
+import javafx.scene.layout.Pane;
+
+public class Player extends Character{
+	private int points;
+	private int hits;
+	private boolean isShooting = false;
+	private SoundPlayer sound;
+
+	public Player(Position position, int lives, double speed_x, int points, int hits, PlayerArt art) {
+		super(position, lives, speed_x, art);
+		
+		setPoints(points);
+		setHits(hits);
+
+		sound = new SoundPlayer("src/com/spaceinvaders/assets/sounds/sample.mp3");
+	}
+	public void changeSprintWhenDie(Pane root){
+		// fazer
+		root.getChildren().remove(this.getPixelArt());
+	}
+	public void move(double x, double y) {
+		this.getPosition().setPosition(x,y);
+	}
+
+	public void playSound(){
+		sound.playSound();
+	}
+
+	public void shoot(Element character, Pane root) {
+		if(character instanceof Invasor) {
+			Invasor invasor = (Invasor) character; // Fazendo o casting
+
+			invasor.takeDamage(root);
+			addPoints(invasor.getType().getPoints());
+		} else {
+			throw new IllegalArgumentException("Parametro inválido");
+		}
+
+	}
+	public void takeDamage() {
+		this.setLives(getLives() - 1);
+	}
+
+	public int getPoints() {
+		return points;
+	}
+	private void setPoints(int points) {
+		this.points = points;
+	}
+	public int getHits() {
+		return hits;
+	}
+	private void setHits(int hits) {
+		this.hits = hits;
+	}
+
+	public boolean isShooting() {
+		return this.isShooting;
+	}
+	public void setIsShooting(boolean isShooting) {
+		this.isShooting = isShooting;
+	}
+
+	public void addPoints(int points) {
+		setPoints(this.getPoints() + points);
+	}
+	public void addHits(int hits) {
+		setHits(this.getHits() + hits);
+	}
+	public void addHit() {
+		playSound();
+		setHits(this.getHits() + 1);
+	}
+	
+	@Override
+	public PlayerArt getPixelArt() {
+		return (PlayerArt)super.getPixelArt();
+	}
+}
